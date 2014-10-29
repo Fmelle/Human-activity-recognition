@@ -4,6 +4,7 @@ function skodaEstablishFeaturesLabels
 
 % Load original left arm data
 load('left_classall_clean')
+[n_left,d] = size(left_classall_clean);
 labels_left = left_classall_clean(:,1);
 classall = left_classall_clean(:,2:d);
 % Define initial vectors
@@ -25,6 +26,7 @@ save('labels_left', 'labels_left')
 
 % Load original right arm data
 load('right_classall_clean')
+[n_right,d] = size(right_classall_clean);
 labels_right = right_classall_clean(:,1);
 classall = right_classall_clean(:,2:d);
 % Define initial vectors
