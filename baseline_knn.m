@@ -45,8 +45,6 @@ sum(predictedLetter==labelsTest)/n % % score
 % Create Confusion Matrix
 conf = confusionmat(labelsTest, predictedLetter);
 % Normalizing to the amount of each test letter
-nConfkNN=conf./(sum(conf,2)*ones(1,m));
-% Normalizing to the amount of each test letter
 nConfkNN = conf./(sum(conf,2)*ones(1,m));
 save('nConfkNN','nConfkNN');
 end

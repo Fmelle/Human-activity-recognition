@@ -3,7 +3,7 @@ function skodaRetrieveTrainingTestData
 %% Establish training and test data
 
 % Training data: 80% and Test data: 20%
-train_factor = 4/5;
+train_factor = 0.8;
 train_test_factor = 4;
 train_test_divident = 5;
 test_train_factor = train_test_divident - train_test_factor;
@@ -13,7 +13,7 @@ load('features_left')
 load('labels_left')
 [n_left,d] = size(features_left);
 % Allocate memory
-features_left_train = zeros(n_left*train_factor,d);
+features_left_train = zeros(n_left*train_factor, d);
 labels_left_train = zeros(n_left*train_factor);
 features_left_test_unproc = zeros(n_left*(1-train_factor),d);
 labels_left_test_unproc = zeros(n_left*(1-train_factor));
