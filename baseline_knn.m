@@ -40,7 +40,8 @@ for i=1:n
     vote(i,predictedLetter(i))=1;
 end
 % Calc and Post correctness percentage
-sum(predictedLetter==labelsTest)/n % % score
+sum(predictedLetter==labelsTest)/n % Print % score
+% Final baseline score: %
 
 % Create Confusion Matrix
 conf = confusionmat(labelsTest, predictedLetter);
