@@ -14,9 +14,9 @@ load('labels_left')
 [n_left,d] = size(features_left);
 % Allocate memory
 features_left_train = zeros(n_left*train_factor, d);
-labels_left_train = zeros(n_left*train_factor);
+labels_left_train = zeros(n_left*train_factor,1);
 features_left_test_unproc = zeros(n_left*(1-train_factor),d);
-labels_left_test_unproc = zeros(n_left*(1-train_factor));
+labels_left_test_unproc = zeros(n_left*(1-train_factor),1);
 trav_left = 1;
 trav_train = 1;
 trav_test = 1;
@@ -58,9 +58,9 @@ load('labels_right')
 [n_right,d] = size(features_right);
 % Allocate Memory
 features_right_train = zeros(n_right*train_factor,d);
-labels_right_train = zeros(n_right*train_factor);
+labels_right_train = zeros(n_right*train_factor,1);
 features_right_test_unproc = zeros(n_right*(1-train_factor),d);
-labels_right_test_unproc = zeros(n_right*(1-train_factor));
+labels_right_test_unproc = zeros(n_right*(1-train_factor),1);
 trav_right = 1;
 trav_train = 1;
 trav_test = 1;
