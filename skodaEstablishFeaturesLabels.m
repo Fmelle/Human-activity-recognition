@@ -13,14 +13,18 @@ features_left = left_cal;
 % Loop through all ten sensor and retrieve only calibrated data
 cal_values = 3;
 sensor_values = 7;
+sensors_to_keep_left = [1,2,10];
+nb_sensors_left = length(sensors_to_keep_left);
 sensors = (d-1)/sensor_values;
 for i=1:sensors
-    index = 1 + (i-1)*sensor_values;
-    index_end = index + cal_values;
-    features_left = [features_left classall(:,(index+1):index_end)];
-    left_cal = [left_cal classall(:,index:index_end)];
+    if(any(i == sensors_to_keep_left))
+        index = 1 + (i-1)*sensor_values;
+        index_end = index + cal_values;
+        features_left = [features_left classall(:,(index+1):index_end)];
+        left_cal = [left_cal classall(:,index:index_end)];
+    end
 end
-features_left = features_left(:,2:(cal_values*sensors + 1));
+features_left = features_left(:,2:end);
 save('features_left', 'features_left')
 save('labels_left', 'labels_left')
 
@@ -36,13 +40,17 @@ features_right = right_cal;
 cal_values = 3;
 sensor_values = 7;
 sensors = (d-1)/sensor_values;
+sensors_to_keep_right = [1,2,7];
+nb_sensors_right = length(sensors_to_keep_right);
 for i=1:sensors
-    index = 1 + (i-1)*sensor_values;
-    index_end = index + cal_values;
-    features_right = [features_right classall(:,(index+1):index_end)];
-    right_cal = [right_cal classall(:,index:index_end)];
+    if(any(i == sensors_to_keep_right))
+        index = 1 + (i-1)*sensor_values;
+        index_end = index + cal_values;
+        features_right = [features_right classall(:,(index+1):index_end)];
+        right_cal = [right_cal classall(:,index:index_end)];
+    end
 end
-features_right = features_right(:,2:(cal_values*sensors + 1));
+features_right = features_right(:,2:end);
 save('features_right', 'features_right')
 save('labels_right', 'labels_right')
 

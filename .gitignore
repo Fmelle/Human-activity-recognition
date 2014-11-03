@@ -1,0 +1,4 @@
+# Matlab process files and pdfs
+*.asv
+*.pdf
+*.mat
