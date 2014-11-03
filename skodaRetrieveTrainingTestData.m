@@ -9,31 +9,31 @@ train_test_divident = 5;
 test_train_factor = train_test_divident - train_test_factor;
 %% Left
 % Load data
-load('features_left')
-load('labels_left')
-[n_left,d] = size(features_left);
+load('features_left_proc')
+load('labels_left_proc')
+[n_left,d] = size(features_left_proc);
 % Allocate memory
 features_left_train = zeros(n_left*train_factor, d);
 labels_left_train = zeros(n_left*train_factor,1);
-features_left_test_unproc = zeros(n_left*(1-train_factor),d);
-labels_left_test_unproc = zeros(n_left*(1-train_factor),1);
+features_left_test = zeros(n_left*(1-train_factor),d);
+labels_left_test = zeros(n_left*(1-train_factor),1);
 trav_left = 1;
 trav_train = 1;
 trav_test = 1;
-while((trav_left+train_test_factor) <= length(features_left))
+while((trav_left+train_test_factor) <= length(features_left_proc))
     % Update spans
     proceed_data = trav_left + train_test_factor;
     proceed_train = trav_train + train_test_factor;
     proceed_test = trav_test + test_train_factor;    
     % Add new data to feature matrices
     features_left_train(trav_train:(proceed_train-1), ...
-        :) = features_left(trav_left:(proceed_data-1), :);
+        :) = features_left_proc(trav_left:(proceed_data-1), :);
     labels_left_train(trav_train:(proceed_train-1)) = normalizeLabel(...
-        labels_left(trav_left:(proceed_data-1)));
-    features_left_test_unproc(trav_test:(proceed_test-1), ...
-        :) = features_left(proceed_data:(proceed_data+test_train_factor-1), :);
-    labels_left_test_unproc(trav_test:(proceed_test-1)) = normalizeLabel(...
-        labels_left(proceed_data:(proceed_data+test_train_factor-1)));
+        labels_left_proc(trav_left:(proceed_data-1)));
+    features_left_test(trav_test:(proceed_test-1), ...
+        :) = features_left_proc(proceed_data:(proceed_data+test_train_factor-1), :);
+    labels_left_test(trav_test:(proceed_test-1)) = normalizeLabel(...
+        labels_left_proc(proceed_data:(proceed_data+test_train_factor-1)));
     % Update indexing
     trav_train = proceed_train;
     trav_test = proceed_test;
@@ -48,36 +48,36 @@ end
 %    ((n_left*train_factor)+1):n_left);
 save('features_left_train', 'features_left_train')
 save('labels_left_train', 'labels_left_train')
-save('features_left_test_unproc', 'features_left_test_unproc')
-save('labels_left_test_unproc', 'labels_left_test_unproc')
+save('features_left_test', 'features_left_test')
+save('labels_left_test', 'labels_left_test')
 
 %% Right
 % Load data
-load('features_right')
-load('labels_right')
-[n_right,d] = size(features_right);
+load('features_right_proc')
+load('labels_right_proc')
+[n_right,d] = size(features_right_proc);
 % Allocate Memory
 features_right_train = zeros(n_right*train_factor,d);
 labels_right_train = zeros(n_right*train_factor,1);
-features_right_test_unproc = zeros(n_right*(1-train_factor),d);
-labels_right_test_unproc = zeros(n_right*(1-train_factor),1);
+features_right_test = zeros(n_right*(1-train_factor),d);
+labels_right_test = zeros(n_right*(1-train_factor),1);
 trav_right = 1;
 trav_train = 1;
 trav_test = 1;
-while((trav_right+train_test_factor) <= length(features_right))
+while((trav_right+train_test_factor) <= length(features_right_proc))
     % Update spans
     proceed_data = trav_right + train_test_factor;
     proceed_train = trav_train + train_test_factor;
     proceed_test = trav_test + test_train_factor;
     % Add new data to feature matrices
     features_right_train(trav_train:(proceed_train-1), ...
-        :) = features_right(trav_right:(proceed_data-1), :);
+        :) = features_right_proc(trav_right:(proceed_data-1), :);
     labels_right_train(trav_train:(proceed_train-1)) = normalizeLabel(...
-        labels_right(trav_right:(proceed_data-1)));
-    features_right_test_unproc(trav_test:(proceed_test-1), ...
-        :) = features_right(proceed_data:(proceed_data+test_train_factor-1), :);
-    labels_right_test_unproc(trav_test:(proceed_test-1)) = normalizeLabel(...
-        labels_right(proceed_data:(proceed_data+test_train_factor-1)));
+        labels_right_proc(trav_right:(proceed_data-1)));
+    features_right_test(trav_test:(proceed_test-1), ...
+        :) = features_right_proc(proceed_data:(proceed_data+test_train_factor-1), :);
+    labels_right_test(trav_test:(proceed_test-1)) = normalizeLabel(...
+        labels_right_proc(proceed_data:(proceed_data+test_train_factor-1)));
     % Update indexing
     trav_train = proceed_train;
     trav_test = proceed_test;
@@ -92,8 +92,8 @@ end
 %    ((n_right*train_factor)+1):n_right);
 save('features_right_train', 'features_right_train')
 save('labels_right_train', 'labels_right_train')
-save('features_right_test_unproc', 'features_right_test_unproc')
-save('labels_right_test_unproc', 'labels_right_test_unproc')
+save('features_right_test', 'features_right_test')
+save('labels_right_test', 'labels_right_test')
 
 end
 
