@@ -9,23 +9,23 @@ train_valid_divident = 10;
 valid_train_factor = train_valid_divident - train_valid_factor;
 %% Left
 % Load data
-load('features_proc')
-load('labels_proc')
-[n,d] = size(features_proc);
+load('features_all_proces')
+load('labels_all_proces')
+[n,d] = size(features_all_proces);
 % Allocate memory
-features_valid = zeros(n*(1-anti_valid_factor),d);
-labels_valid = zeros(n*(1-anti_valid_factor),1);
+features_validation = zeros(n*(1-anti_valid_factor),d);
+labels_validation = zeros(n*(1-anti_valid_factor),1);
 trav = 1;
 trav_valid = 1;
-while((trav+train_valid_factor) <= length(features_proc))
+while((trav+train_valid_factor) <= length(features_all_proces))
     % Update spans
     proceed_data = trav + train_valid_factor;
     proceed_valid = trav_valid + valid_train_factor;    
     % Add new data to feature matrices
-    features_valid(trav_valid:(proceed_valid-1), ...
-        :) = features_proc(proceed_data:(proceed_data+valid_train_factor-1), :);
-    labels_valid(trav_valid:(proceed_valid-1)) = normalizeLabel(...
-        labels_proc(proceed_data:(proceed_data+valid_train_factor-1)));
+    features_validation(trav_valid:(proceed_valid-1), ...
+        :) = features_all_proces(proceed_data:(proceed_data+valid_train_factor-1), :);
+    labels_validation(trav_valid:(proceed_valid-1)) = normalizeLabel(...
+        labels_all_proces(proceed_data:(proceed_data+valid_train_factor-1),1));
     % Update indexing
     trav_valid = proceed_valid;
     trav = trav + train_valid_divident;

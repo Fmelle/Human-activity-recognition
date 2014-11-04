@@ -7,11 +7,10 @@ train_factor = 0.8;
 train_test_factor = 4;
 train_test_divident = 5;
 test_train_factor = train_test_divident - train_test_factor;
-%% Left
 % Load data
-load('features_proc')
-load('labels_proc')
-[n,d] = size(features_proc);
+load('features_all_proces')
+load('labels_all_proces')
+[n,d] = size(features_all_proces);
 % Allocate memory
 features_train = zeros(n*train_factor, d);
 labels_train = zeros(n*train_factor,1);
@@ -20,20 +19,20 @@ labels_test = zeros(n*(1-train_factor),1);
 trav = 1;
 trav_train = 1;
 trav_test = 1;
-while((trav+train_test_factor) <= length(features_proc))
+while((trav+train_test_factor) <= length(features_all_proces))
     % Update spans
     proceed_data = trav + train_test_factor;
     proceed_train = trav_train + train_test_factor;
     proceed_test = trav_test + test_train_factor;    
     % Add new data to feature matrices
     features_train(trav_train:(proceed_train-1), ...
-        :) = features_proc(trav:(proceed_data-1), :);
+        :) = features_all_proces(trav:(proceed_data-1), :);
     labels_train(trav_train:(proceed_train-1)) = normalizeLabel(...
-        labels_proc(trav:(proceed_data-1)));
+        labels_all_proces(trav:(proceed_data-1),1));
     features_test(trav_test:(proceed_test-1), ...
-        :) = features_proc(proceed_data:(proceed_data+test_train_factor-1), :);
+        :) = features_all_proces(proceed_data:(proceed_data+test_train_factor-1), :);
     labels_test(trav_test:(proceed_test-1)) = normalizeLabel(...
-        labels_proc(proceed_data:(proceed_data+test_train_factor-1)));
+        labels_all_proces(proceed_data:(proceed_data+test_train_factor-1),1));
     % Update indexing
     trav_train = proceed_train;
     trav_test = proceed_test;

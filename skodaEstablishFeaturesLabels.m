@@ -9,8 +9,12 @@ raw = 0;
 % If a smaller subset of sensors is preferred;
 % Reduce to which sensors (s) to look at in the array (s corresponds to the
 % parameter s=0..10 for each arm)
-sensors_to_keep_left = [1,2,10];
-sensors_to_keep_right = [1,2,7];
+sensors_to_keep_left = [1,2,3,4,5,6,7,8,9,10];
+sensors_to_keep_right = [1,2,3,4,5,6,7,8,9,10];
+
+% In one iteration only 6 sensors was used:
+% left: [1,2,10]
+% right: [1,2,7]
 
 %% Load original left arm data
 load('left_classall_clean')

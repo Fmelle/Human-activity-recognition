@@ -7,13 +7,13 @@ load('features_train')
 load('labels_train')
 load('features_test')
 load('labels_test')
-load('features_valid')
-load('labels_valid')
+load('features_validation')
+load('labels_validation')
 
 % Find best value of parameter k
 k_max = 20;
-optimalK = kNNValidateK(features_left_valid, ...
-    labels_left_valid, features_left_test, labels_left_test, k_max);
+optimalK = kNNValidateK(features_validation, ...
+    labels_validation, features_test, labels_test, k_max);
 
 % Perform training and classification
 voteKNN = kNearestNeighbor(features_train, ... 
@@ -38,7 +38,8 @@ for i=1:n
 end
 % Calc and Post correctness percentage
 sum(predictedLetter==labelsTest)/n % Print % score
-% Final baseline score: % 0.6000918 
+
+% Current score: % 0.932526756630991
 
 % Create Confusion Matrix
 conf = confusionmat(labelsTest, predictedLetter);
@@ -53,13 +54,13 @@ function optimalK=kNNValidateK(featuresValid, labelsValid, featuresTest, labelsT
 
 %% Current results
 % valid = [
-%  1 0.5831;  2 0.5799;  3 0.5895;  4 0.5946; 
-%  5 0.6042;  6 0.6019;  7 0.6056;  8 0.6024; 
-%  9 0.6042; 10 0.6028; 11 0.6070; 12 0.6051;
-% 13 0.6038; 14 0.6084; 15 0.6015; 16 0.6028;
-% 17 0.6000; 18 0.6024; 19 0.5996; 20 0.6006
+%  1 0.;  2 0.;  3 0.;  4 0.; 
+%  5 0.;  6 0.;  7 0.;  8 0.; 
+%  9 0.; 10 0.; 11 0.; 12 0.;
+% 13 0.; 14 0.; 15 0.; 16 0.;
+% 17 0.; 18 0.; 19 0.; 20 0.
 % ]
-% Best: k = 14 Nearest Neigbors with % 0.60836
+% Best: k = 1 Nearest Neigbors with % 0.939506747324337
 
 %% Algorithm
 
