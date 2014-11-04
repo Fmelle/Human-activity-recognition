@@ -39,7 +39,7 @@ end
 % Calc and Post correctness percentage
 sum(predictedLetter==labelsTest)/n % Print % score
 
-% Current score: % 0.932526756630991
+% Current score: % 0.942764076314565
 
 % Create Confusion Matrix
 conf = confusionmat(labelsTest, predictedLetter);
@@ -50,7 +50,6 @@ end
 
 function optimalK=kNNValidateK(featuresValid, labelsValid, featuresTest, labelsTest, k_max)
 %% Validation [NumNeighbours Prediction], 10% validation data
-% Best overall: k = 11
 
 %% Current results
 % valid = [
@@ -60,7 +59,7 @@ function optimalK=kNNValidateK(featuresValid, labelsValid, featuresTest, labelsT
 % 13 0.; 14 0.; 15 0.; 16 0.;
 % 17 0.; 18 0.; 19 0.; 20 0.
 % ]
-% Best: k = 1 Nearest Neigbors with % 0.939506747324337
+% Best: k = 1 Nearest Neigbors with % 0.955328059562587
 
 %% Algorithm
 

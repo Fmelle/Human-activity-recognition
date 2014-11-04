@@ -5,7 +5,7 @@ function skodaEstablishFeaturesLabels
 %% General parameters
 
 % Calibrated/Raw Data Switch: Set to 3 for RAW, Set to 0 for CALIBRATED
-raw = 0;
+raw = 3;
 % If a smaller subset of sensors is preferred;
 % Reduce to which sensors (s) to look at in the array (s corresponds to the
 % parameter s=0..10 for each arm)
