@@ -9,57 +9,30 @@ train_valid_divident = 10;
 valid_train_factor = train_valid_divident - train_valid_factor;
 %% Left
 % Load data
-load('features_left_proc')
-load('labels_left_proc')
-[n_left,d] = size(features_left_proc);
+load('features_proc')
+load('labels_proc')
+[n,d] = size(features_proc);
 % Allocate memory
-features_left_valid = zeros(n_left*(1-anti_valid_factor),d);
-labels_left_valid = zeros(n_left*(1-anti_valid_factor),1);
-trav_left = 1;
+features_valid = zeros(n*(1-anti_valid_factor),d);
+labels_valid = zeros(n*(1-anti_valid_factor),1);
+trav = 1;
 trav_valid = 1;
-while((trav_left+train_valid_factor) <= length(features_left_proc))
+while((trav+train_valid_factor) <= length(features_proc))
     % Update spans
-    proceed_data = trav_left + train_valid_factor;
+    proceed_data = trav + train_valid_factor;
     proceed_valid = trav_valid + valid_train_factor;    
     % Add new data to feature matrices
-    features_left_valid(trav_valid:(proceed_valid-1), ...
-        :) = features_left_proc(proceed_data:(proceed_data+valid_train_factor-1), :);
-    labels_left_valid(trav_valid:(proceed_valid-1)) = normalizeLabel(...
-        labels_left_proc(proceed_data:(proceed_data+valid_train_factor-1)));
+    features_valid(trav_valid:(proceed_valid-1), ...
+        :) = features_proc(proceed_data:(proceed_data+valid_train_factor-1), :);
+    labels_valid(trav_valid:(proceed_valid-1)) = normalizeLabel(...
+        labels_proc(proceed_data:(proceed_data+valid_train_factor-1)));
     % Update indexing
     trav_valid = proceed_valid;
-    trav_left = trav_left + train_valid_divident;
+    trav = trav + train_valid_divident;
 end
 
-save('features_left_valid', 'features_left_valid')
-save('labels_left_valid', 'labels_left_valid')
-
-%% Right
-% Load data
-load('features_right_proc')
-load('labels_right_proc')
-[n_right,d] = size(features_right_proc);
-% Allocate Memory
-features_right_valid = zeros(n_right*(1-anti_valid_factor),d);
-labels_right_valid = zeros(n_right*(1-anti_valid_factor),1);
-trav_right = 1;
-trav_valid = 1;
-while((trav_right+train_valid_factor) <= length(features_right_proc))
-    % Update spans
-    proceed_data = trav_right + train_valid_factor;
-    proceed_valid = trav_valid + valid_train_factor;
-    % Add new data to feature matrices
-    features_right_valid(trav_valid:(proceed_valid-1), ...
-        :) = features_right_proc(proceed_data:(proceed_data+valid_train_factor-1), :);
-    labels_right_valid(trav_valid:(proceed_valid-1)) = normalizeLabel(...
-        labels_right_proc(proceed_data:(proceed_data+valid_train_factor-1)));
-    % Update indexing
-    trav_valid = proceed_valid;
-    trav_right = trav_right + train_valid_divident;
-end
-
-save('features_right_valid', 'features_right_valid')
-save('labels_right_valid', 'labels_right_valid')
+save('features_validation', 'features_validation')
+save('labels_validation', 'labels_validation')
 
 end
 

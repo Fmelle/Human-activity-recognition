@@ -2,8 +2,15 @@ function skodaEstablishFeaturesLabels
 
 %% Retrieve measures
 
-% General parameters
-raw = 0; % Set to 3 if RAW instead of CALIBRATED
+%% General parameters
+
+% Calibrated/Raw Data Switch: Set to 3 for RAW, Set to 0 for CALIBRATED
+raw = 0;
+% If a smaller subset of sensors is preferred;
+% Reduce to which sensors (s) to look at in the array (s corresponds to the
+% parameter s=0..10 for each arm)
+sensors_to_keep_left = [1,2,10];
+sensors_to_keep_right = [1,2,7];
 
 %% Load original left arm data
 load('left_classall_clean')
@@ -16,7 +23,6 @@ features_left = left_cal;
 % Loop through all ten sensor and retrieve only calibrated data
 nb_values = 3;
 sensor_values = 7;
-sensors_to_keep_left = [1,2,10];
 nb_sensors_left = length(sensors_to_keep_left);
 sensors = (d-1)/sensor_values;
 for i=1:sensors
@@ -43,7 +49,6 @@ features_right = right_cal;
 nb_values = 3;
 sensor_values = 7;
 sensors = (d-1)/sensor_values;
-sensors_to_keep_right = [1,2,7];
 nb_sensors_right = length(sensors_to_keep_right);
 for i=1:sensors
     if(any(i == sensors_to_keep_right))
@@ -62,21 +67,64 @@ save('labels_right', 'labels_right')
 % Assess longest
 if(n_right > n_left)
     % Allocate features and labels
-    i = 1; k = 1;
+    i = 1; k = 1; p = 1;
     [n,d] = size(features_left);
     features_both = zeros(n,d*2);
     labels_both = zeros(n,1);
     % Establish combined data set
-    while(k < n_right)
+    while(k < n_right && i < n_left)
         if(labels_left(i) == labels_right(k))
-            labels_both(i,1) = labels_left(i,1);
-            features_both(i,:) = [features_left(i,:) features_right(k,:)];
+            labels_both(p,1) = labels_left(i,1);
+            features_both(p,:) = [features_left(i,:) features_right(k,:)];
+            p = p + 1;
             i = i + 1;
+            k = k + 1;
+        else
+            % If data sets corresponds we search to align them again giving
+            % priority to the one who changed activity
+            if(labels_left(i) == labels_left(i-1))
+                j = i;
+                while(labels_left(j) ~= labels_right(k))
+                    if(j-i < 5000)
+                        j = j + 1;
+                    else
+                        % If no alignment can be found for recent change
+                        % then we will rather skip the activity as it does
+                        % appear incoherent in both data sets
+                        j = i;
+                        while(labels_left(i) ~= labels_right(k))
+                            k = k + 1;
+                        end
+                        break;
+                    end
+                end
+                i = j;
+            else 
+                j = k;
+                while(labels_left(i) ~= labels_right(j))
+                    if(j-k < 5000)
+                        j = j + 1;
+                    else
+                        j = k;
+                        while(labels_left(i) ~= labels_right(k))
+                            i = i + 1;
+                        end
+                        break;
+                    end      
+                end          
+                k = j;
+            end
         end
-        k = k + 1;
     end
 else
     disp('left arm data set is longer than right arm data set')
 end
+
+% Clean out zeros
+features_both(find(labels_both(:,1)==0),:) = [];
+labels_both(find(labels_both(:,1)==0),:) = [];
+
 save('features_both', 'features_both')
 save('labels_both', 'labels_both')
+
+end

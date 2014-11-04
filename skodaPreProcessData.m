@@ -11,7 +11,7 @@ load('labels_both')
 %% Extract mean and standard deviation
 index = 1;
 j = 1;
-while (index + overfl < length(labels_left))
+while (index + overfl < length(labels_both))
     if(index == 1)
         feat_slide(j,:) = [mean(features_both(index:window,:)) ...
             std(features_both(index:window,:))];
@@ -27,10 +27,10 @@ while (index + overfl < length(labels_left))
     j = j + 1;
 end
 
-features_both_proc = feat_slide;
-labels_both_proc = label_slide';
+features_proc = feat_slide;
+labels_proc = label_slide';
 
-save('features_both_proc', 'features_both_proc')
-save('labels_both_proc', 'labels_both_proc')
+save('features_proc', 'features_proc')
+save('labels_proc', 'labels_proc')
 
 end
