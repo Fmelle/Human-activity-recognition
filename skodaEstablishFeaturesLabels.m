@@ -3,7 +3,7 @@ function skodaEstablishFeaturesLabels
 %% Retrieve measures
 
 % General parameters
-calibrated = 0; % Set to 3 if RAW instead of CALIBRATED
+raw = 0; % Set to 3 if RAW instead of CALIBRATED
 
 %% Load original left arm data
 load('left_classall_clean')
@@ -21,7 +21,7 @@ nb_sensors_left = length(sensors_to_keep_left);
 sensors = (d-1)/sensor_values;
 for i=1:sensors
     if(any(i == sensors_to_keep_left))
-        index = 1 + (i-1)*sensor_values + calibrated;
+        index = 1 + (i-1)*sensor_values + raw;
         index_end = index + nb_values;
         features_left = [features_left classall(:,(index+1):index_end)];
         left_cal = [left_cal classall(:,index:index_end)];
@@ -47,7 +47,7 @@ sensors_to_keep_right = [1,2,7];
 nb_sensors_right = length(sensors_to_keep_right);
 for i=1:sensors
     if(any(i == sensors_to_keep_right))
-        index = 1 + (i-1)*sensor_values + calibrated;
+        index = 1 + (i-1)*sensor_values + raw;
         index_end = index + nb_values;
         features_right = [features_right classall(:,(index+1):index_end)];
         right_cal = [right_cal classall(:,index:index_end)];

@@ -5,59 +5,32 @@ function skodaPreProcessData
 window = 64;
 overfl = 32;
 % Load data
-load('features_left')
-load('labels_left')
-load('features_right')
-load('labels_right')
+load('features_both')
+load('labels_both')
 
-%% Left
-index_left = 1;
+%% Extract mean and standard deviation
+index = 1;
 j = 1;
-while (index_left + overfl < length(labels_left))
-    if(index_left == 1)
-        feat_slide_left(j,:) = mean(features_left(...
-            index_left:window,:));
-        label_slide_left(j) = labels_left(overfl);
+while (index + overfl < length(labels_left))
+    if(index == 1)
+        feat_slide(j,:) = [mean(features_both(index:window,:)) ...
+            std(features_both(index:window,:))];
+        label_slide(j) = labels_both(overfl);
     else
-        startInd = index_left - overfl;
+        startInd = index - overfl;
         stopInd = startInd + window;
-        feat_slide_left(j,:) = mean(features_left(...
-            startInd:stopInd,:));
-        label_slide_left(j) = labels_left(index_left);
+        feat_slide(j,:) = [mean(features_both(startInd:stopInd,:)) ...
+            std(features_both(startInd:stopInd,:))];
+        label_slide(j) = labels_both(index);
     end
-    index_left = index_left + window;
+    index = index + window;
     j = j + 1;
 end
 
-features_left_proc = feat_slide_left;
-labels_left_proc = label_slide_left';
+features_both_proc = feat_slide;
+labels_both_proc = label_slide';
 
-save('features_left_proc', 'features_left_proc')
-save('labels_left_proc', 'labels_left_proc')
-
-%% Right
-index_right = 1;
-k = 1;
-while (index_right + overfl < length(labels_right))
-    if(index_right == 1)
-        feat_slide_right(k,:) = mean(features_right(...
-            index_right:window,:));
-        label_slide_right(k) = labels_right(overfl);
-    else
-        startInd = index_right - overfl;
-        stopInd = startInd + window;
-        feat_slide_right(k,:) = mean(features_right(...
-            startInd:stopInd,:));
-        label_slide_right(k) = labels_right(index_right);
-    end
-    index_right = index_right + window;
-    k = k + 1;
-end
-
-features_right_proc = feat_slide_right;
-labels_right_proc = label_slide_right';
-
-save('features_right_proc', 'features_right_proc')
-save('labels_right_proc', 'labels_right_proc')
+save('features_both_proc', 'features_both_proc')
+save('labels_both_proc', 'labels_both_proc')
 
 end
