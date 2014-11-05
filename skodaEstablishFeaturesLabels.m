@@ -1,5 +1,6 @@
-function skodaEstablishFeaturesLabels
-
+function [...
+    features_both, labels_both...
+    ] = skodaEstablishFeaturesLabels(left_classall_clean, right_classall_clean)
 %% Retrieve measures
 
 %% General parameters
@@ -19,7 +20,6 @@ sensors_to_keep_right = [1,2,3,4,5,6,7,8,9,10];
 % evaluated without pre-knowledge for eventual excluding some
 
 %% Load original left arm data
-load('left_classall_clean')
 [n_left,d] = size(left_classall_clean);
 labels_left = left_classall_clean(:,1);
 classall = left_classall_clean(:,2:d);
@@ -44,7 +44,6 @@ features_left = features_left(:,2:end);
 %save('labels_left', 'labels_left')
 
 %% Load original right arm data
-load('right_classall_clean')
 [n_right,d] = size(right_classall_clean);
 labels_right = right_classall_clean(:,1);
 classall = right_classall_clean(:,2:d);

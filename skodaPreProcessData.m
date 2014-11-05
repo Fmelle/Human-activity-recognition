@@ -1,4 +1,4 @@
-function skodaPreProcessData
+function [features_all_proces, labels_all_proces] = skodaPreProcessData
 
 %% Preprocess data with sliding window
 % 64 unit window length and 50% overflow, label set by median value

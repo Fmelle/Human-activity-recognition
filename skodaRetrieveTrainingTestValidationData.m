@@ -1,4 +1,8 @@
-function skodaRetrieveTrainingTestValidationData
+function [...
+    features_train, labels_train, ...
+    features_test, labels_test, ...
+    features_validation, labels_validation....
+    ] = skodaRetrieveTrainingTestValidationData
 
 %% Establish training and test data
 
@@ -68,15 +72,11 @@ while((trav+train_valid_factor) <= n)
     % Add new data to feature matrices
     features_validation(trav_valid:(proceed_valid-1),:) = features_all_proces(...
         proceed_data:(proceed_data+valid_train_factor-1), :);
-    labels_validation(trav_valid:(proceed_valid-1)) = labels_all_proces(...
+    labels_validation(trav_valid:(proceed_valid-1),1) = labels_all_proces(...
         proceed_data:(proceed_data+valid_train_factor-1),1);
     % Update indexing
     trav_valid = proceed_valid;
     trav = trav + train_valid_divident;
 end
-
-%% Save results
-save('data_ready', 'features_train', 'labels_train', 'features_test', ...
-    'labels_test', 'features_validation', 'labels_validation');
 
 end
