@@ -3,6 +3,8 @@ Human-activity-recognition
 
 THIS BRANCH CONTAINS OUTDATED PREPROCESSING FILES
 
+	- Files are located in folder: featExtrIter0/
+
 -------------------------------------------------------------
 
 Sliding Window
