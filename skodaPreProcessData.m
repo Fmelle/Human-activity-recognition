@@ -5,8 +5,7 @@ function skodaPreProcessData
 window = 64;
 overfl = 32;
 % Load data
-load('features_both')
-load('labels_both')
+load('_data_raw')
 
 %% Extract mean and standard deviation
 
@@ -31,15 +30,47 @@ end
 
 %% Randomize data
 
-% Establish processed data set
-data_processed = [label_slide feat_slide];
+% Establish processed data set with normalized labels
+data_processed = [normalizeLabels(label_slide) feat_slide];
 % Randomize processed data
 data_processed_random = data_processed(randperm(size(data_processed,1)),:);
-% Divide into labels and features
+% Divide randomized data into labels and features
 labels_all_proces = data_processed_random(:,1);
 features_all_proces = data_processed_random(:,2:end);
 
-save('features_all_proces', 'features_all_proces')
-save('labels_all_proces', 'labels_all_proces')
+save('_data_procd', 'features_all_proces', 'labels_all_proces')
 
+end
+
+function stdLabels=normalizeLabels(labels)
+% Replace a given skoda activity label with normalized value
+stdLabels = labels;
+for i=1:length(labels)
+    switch labels(i,1)
+        case 32
+            stdLabels(i,1) = 1;
+        case 48
+            stdLabels(i,1) = 2;
+        case 49
+            stdLabels(i,1) = 3;
+        case 50
+            stdLabels(i,1) = 4;
+        case 51
+            stdLabels(i,1) = 5;
+        case 52
+            stdLabels(i,1) = 6;
+        case 53
+            stdLabels(i,1) = 7;
+        case 54
+            stdLabels(i,1) = 8;
+        case 55
+            stdLabels(i,1) = 9;
+        case 56
+            stdLabels(i,1) = 10;
+        case 57
+            stdLabels(i,1) = 11;
+        otherwise
+            disp('unknown label encountered');
+    end
+end
 end

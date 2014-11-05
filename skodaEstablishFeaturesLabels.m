@@ -12,9 +12,11 @@ raw = 3;
 sensors_to_keep_left = [1,2,3,4,5,6,7,8,9,10];
 sensors_to_keep_right = [1,2,3,4,5,6,7,8,9,10];
 
-% In one iteration only 6 sensors was used:
+% In iteration #1 only 6 sensors was used:
 % left: [1,2,10]
 % right: [1,2,7]
+% Remark: Sensors cannot be connected to actual measure points and must be
+% evaluated without pre-knowledge for eventual excluding some
 
 %% Load original left arm data
 load('left_classall_clean')
@@ -22,8 +24,8 @@ load('left_classall_clean')
 labels_left = left_classall_clean(:,1);
 classall = left_classall_clean(:,2:d);
 % Define initial vectors
-left_cal = labels_left;
-features_left = left_cal;
+left_data = labels_left;
+features_left = left_data;
 % Loop through all ten sensor and retrieve only calibrated data
 nb_values = 3;
 sensor_values = 7;
@@ -34,12 +36,12 @@ for i=1:sensors
         index = 1 + (i-1)*sensor_values + raw;
         index_end = index + nb_values;
         features_left = [features_left classall(:,(index+1):index_end)];
-        left_cal = [left_cal classall(:,index:index_end)];
+        left_data = [left_data classall(:,index:index_end)];
     end
 end
 features_left = features_left(:,2:end);
-save('features_left', 'features_left')
-save('labels_left', 'labels_left')
+%save('features_left', 'features_left')
+%save('labels_left', 'labels_left')
 
 %% Load original right arm data
 load('right_classall_clean')
@@ -47,8 +49,8 @@ load('right_classall_clean')
 labels_right = right_classall_clean(:,1);
 classall = right_classall_clean(:,2:d);
 % Define initial vectors
-right_cal = labels_right;
-features_right = right_cal;
+right_data = labels_right;
+features_right = right_data;
 % Loop through all sensors and retrieve only calibrated data
 nb_values = 3;
 sensor_values = 7;
@@ -59,12 +61,12 @@ for i=1:sensors
         index = 1 + (i-1)*sensor_values + raw;
         index_end = index + nb_values;
         features_right = [features_right classall(:,(index+1):index_end)];
-        right_cal = [right_cal classall(:,index:index_end)];
+        right_data = [right_data classall(:,index:index_end)];
     end
 end
 features_right = features_right(:,2:end);
-save('features_right', 'features_right')
-save('labels_right', 'labels_right')
+%save('features_right', 'features_right')
+%save('labels_right', 'labels_right')
 
 %% Merge data sets
 
@@ -124,11 +126,10 @@ else
     disp('left arm data set is longer than right arm data set')
 end
 
-% Clean out zeros
+% Clean out zeros - data lost to alignment
 features_both(find(labels_both(:,1)==0),:) = [];
 labels_both(find(labels_both(:,1)==0),:) = [];
 
-save('features_both', 'features_both')
-save('labels_both', 'labels_both')
+save('_data_raw', 'features_both', 'labels_both');
 
 end

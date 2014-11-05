@@ -1,26 +1,20 @@
 function baseline_knn
-
 %% Train and retrieve result of kNearestNeighbor
 
 % Load data
-load('features_train')
-load('labels_train')
-load('features_test')
-load('labels_test')
-load('features_validation')
-load('labels_validation')
+load('data_ready')
 
 % Find best value of parameter k
-k_max = 20;
-optimalK = kNNValidateK(features_validation, ...
-    labels_validation, features_test, labels_test, k_max);
+%k_max = 30;
+%optimalK = kNNValidateK(features_validation, ...
+%    labels_validation, features_test, labels_test, k_max); % = 1
+
+% Chosen k based on validation data results
+k = 6;
 
 % Perform training and classification
 voteKNN = kNearestNeighbor(features_train, ... 
-    labels_train, features_test, labels_test, optimalK);
-
-labels = '32 49 50 51 52 53 54 55 56 57 58';
-printmat(nConfkNN, 'Confusion matrix', labels, labels)
+    labels_train, features_test, labels_test, k);
 
 end
 
@@ -32,7 +26,7 @@ knn = ClassificationKNN.fit(featuresTrain, labelsTrain,...
 
 % Test on remaining data
 predictedLetter = knn.predict(featuresTest);
-% Establish prediction overview 1 - 57 classes (classes are 32-57)
+% Establish prediction
 m = max(labelsTrain);
 [n d] = size(featuresTest);
 vote=zeros(n,m);
@@ -42,27 +36,26 @@ end
 % Calc and Post correctness percentage
 sum(predictedLetter==labelsTest)/n % Print % score
 
-% Current score: % 0.942764076314565
+% Current score: % 0.939534883720930
 
 % Create Confusion Matrix
 conf = confusionmat(labelsTest, predictedLetter);
 % Normalizing to the amount of each test letter
 nConfkNN = conf./(sum(conf,2)*ones(1,m));
 save('nConfkNN','nConfkNN');
+% Print confusion matrix
+labels = '32 49 50 51 52 53 54 55 56 57 58';
+printmat(nConfkNN, 'Confusion matrix', labels, labels)
 end
 
 function optimalK=kNNValidateK(featuresValid, labelsValid, featuresTest, labelsTest, k_max)
 %% Validation [NumNeighbours Prediction], 10% validation data
 
 %% Current results
-% valid = [
-%  1 0.;  2 0.;  3 0.;  4 0.; 
-%  5 0.;  6 0.;  7 0.;  8 0.; 
-%  9 0.; 10 0.; 11 0.; 12 0.;
-% 13 0.; 14 0.; 15 0.; 16 0.;
-% 17 0.; 18 0.; 19 0.; 20 0.
-% ]
-% Best: k = 1 Nearest Neigbors with % 0.955328059562587
+% Best: k = 1 with % 0.900930232558140
+% Other important results:
+% k =  6 with % 0.873953488372093
+% k = 14 with % 0.809302325581395
 
 %% Algorithm
 
@@ -85,6 +78,11 @@ for k=1:k_max
     kNNscore(k) = sum(predictedLetter==labelsTest)/n; % Print % score
 end
 
+% Plot results
+figure
+plot(kNNscore)
+% Print results
+kNNscore
 [highest_performance, optimalK] = max(kNNscore)
 
 end
