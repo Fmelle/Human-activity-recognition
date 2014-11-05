@@ -1,6 +1,9 @@
 Human-activity-recognition
 ==========================
 
+THIS BRANCH CONTAINS OUTDATED PREPROCESSING FILES
+
+-------------------------------------------------------------
 
 Sliding Window
 
