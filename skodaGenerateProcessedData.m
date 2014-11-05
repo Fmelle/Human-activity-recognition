@@ -12,6 +12,7 @@
 clear all
 close all
 clc
+addpath(genpath(pwd));
 
 %% Load original separated and unprocessed sensor data
 load('left_classall_clean')
