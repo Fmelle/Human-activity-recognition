@@ -2,7 +2,7 @@ function baseline_knn
 %% Train and retrieve result of kNearestNeighbor
 
 % Load data
-load('data_ready')
+load('data_procd_split__basis')
 
 %% Both
 % Find best value of parameter k
@@ -60,9 +60,9 @@ end
 sum(predictedLetter==labelsTest)/n % Print % score
 
 % Current score: 
-% Both:     0.939534883720930
-% Left:     0.910927456382002
-% Right:    0.899365367180417
+% Both:     0.941860465116279
+% Left:     0.915977961432507
+% Right:    0.907978241160471
 
 % Create Confusion Matrix
 conf = confusionmat(labelsTest, predictedLetter);
