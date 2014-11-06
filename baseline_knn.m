@@ -4,23 +4,46 @@ function baseline_knn
 % Load data
 load('data_ready')
 
+%% Both
 % Find best value of parameter k
 %k_max = 30;
 %optimalK = kNNValidateK(features_validation, ...
-%    labels_validation, features_test, labels_test, k_max); % = 1
+%    labels_validation, features_test, labels_test, k_max);
 
 % Chosen k based on validation data results
 k = 6;
-
 % Perform training and classification
 voteKNN = kNearestNeighbor(features_train, ... 
     labels_train, features_test, labels_test, k);
+%% Left
+% Find best value of parameter k
+k_max = 30;
+optimalK = kNNValidateK(features_left_validation, ...
+    labels_left_validation, features_left_test, labels_left_test, k_max);
+
+% Chosen k based on validation data results
+k = 3;
+% Perform training and classification
+voteKNN = kNearestNeighbor(features_left_train, ... 
+    labels_left_train, features_left_test, labels_left_test, k);
+
+%% Right
+% Find best value of parameter k
+k_max = 30;
+optimalK = kNNValidateK(features_right_validation, ...
+    labels_right_validation, features_right_test, labels_right_test, k_max);
+
+% Chosen k based on validation data results
+k = 6;
+% Perform training and classification
+voteKNN = kNearestNeighbor(features_right_train, ... 
+    labels_right_train, features_right_test, labels_right_test, k);
 
 end
 
 
 function vote=kNearestNeighbor(featuresTrain, labelsTrain, featuresTest, labelsTest, optimalK)
-%% Create the kNN classifier
+%% Create and score the kNN classifier
 knn = ClassificationKNN.fit(featuresTrain, labelsTrain,...
     'NumNeighbors',optimalK,'BreakTies','nearest');
 
@@ -36,7 +59,10 @@ end
 % Calc and Post correctness percentage
 sum(predictedLetter==labelsTest)/n % Print % score
 
-% Current score: % 0.939534883720930
+% Current score: 
+% Both:     0.939534883720930
+% Left:     0.910927456382002
+% Right:    0.899365367180417
 
 % Create Confusion Matrix
 conf = confusionmat(labelsTest, predictedLetter);
@@ -50,15 +76,6 @@ end
 
 function optimalK=kNNValidateK(featuresValid, labelsValid, featuresTest, labelsTest, k_max)
 %% Validation [NumNeighbours Prediction], 10% validation data
-
-%% Current results
-% Best: k = 1 with % 0.900930232558140
-% Other important results:
-% k =  6 with % 0.873953488372093
-% k = 14 with % 0.809302325581395
-
-%% Algorithm
-
 % Loop through kNN varying k from 1 to k_max
 kNNscore = zeros(k_max,1);
 for k=1:k_max

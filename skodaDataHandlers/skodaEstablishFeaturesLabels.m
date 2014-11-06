@@ -1,5 +1,7 @@
 function [...
-    features_both, labels_both...
+    features_both, labels_both,...
+    features_left, labels_left,...
+    features_right, labels_right...
     ] = skodaEstablishFeaturesLabels(left_classall_clean, right_classall_clean)
 %% Retrieve measures
 
@@ -40,8 +42,6 @@ for i=1:sensors
     end
 end
 features_left = features_left(:,2:end);
-%save('features_left', 'features_left')
-%save('labels_left', 'labels_left')
 
 %% Load original right arm data
 [n_right,d] = size(right_classall_clean);
@@ -64,8 +64,6 @@ for i=1:sensors
     end
 end
 features_right = features_right(:,2:end);
-%save('features_right', 'features_right')
-%save('labels_right', 'labels_right')
 
 %% Merge data sets
 
@@ -129,6 +127,9 @@ end
 features_both(find(labels_both(:,1)==0),:) = [];
 labels_both(find(labels_both(:,1)==0),:) = [];
 
-save('_data_raw', 'features_both', 'labels_both');
+save('_data_raw',...
+    'features_both', 'labels_both',...
+    'features_left', 'labels_left',...
+    'features_right', 'labels_right');
 
 end
