@@ -16,8 +16,8 @@ k = 5;
 %    'optimalK_both', 'kNNscore_both', 'rloss_both', 'kloss_both');
 
 % Perform training and classification
-voteKNN = kNearestNeighbor(features_all_processed, ... 
-    labels_all_processed, k);
+%voteKNN = kNearestNeighbor(features_all_processed, ... 
+%    labels_all_processed, k);
 
 %% Left
 % Find best value of parameter k
@@ -27,8 +27,8 @@ voteKNN = kNearestNeighbor(features_all_processed, ...
 %    'optimalK_left', 'kNNscore_left', 'rloss_left', 'kloss_left');
 
 % Perform training and classification
-voteKNN = kNearestNeighbor(features_left_processed, ... 
-    labels_left_processed, k);
+%voteKNN = kNearestNeighbor(features_left_processed, ... 
+%    labels_left_processed, k);
 
 %% Right
 % Find best value of parameter k
@@ -38,18 +38,24 @@ voteKNN = kNearestNeighbor(features_left_processed, ...
 %    'optimalK_right', 'kNNscore_right', 'rloss_right', 'kloss_right');
 
 % Perform training and classification
-voteKNN = kNearestNeighbor(features_right_processed, ... 
-    labels_right_processed, k);
+%voteKNN = kNearestNeighbor(features_right_processed, ... 
+%    labels_right_processed, k);
 
 %% After feature extraction
 
 % Load data to test
-%load('right_lda_norm')                 % k: Result: 
-%load('right_pca_norm')                 % k: Result:
-%load('right_preprocessed_norm')        % k: Result:
-%load('left_lda_norm')                  % k: Result:
-%load('left_pca_norm')                  % k: Result:
-%load('left_preprocessed_norm')         % k: Result: 
+%load('right_pca.data')                  % k: 3 Result: 0.868763502989499
+%load('left_pca.data')                   % k: 3 Result: 0.905278711912769
+%load('right_preprocessed.data')         % k: 3 Result: 0.879163945133899
+%load('left_preprocessed.data')          % k: 3 Result: 0.910323040864160
+%load('right_lda.data')                  % k: 7 Result: 0.944581218911722
+%load('left_lda.data')                   % k: 7 Result: 0.953480077448283
+
+% Execution
+% features = data(:,2:end);
+% labels = data(:,1);
+% kNNValidateK(features, labels);
+% kNearestNeighbor(features, labels, optimalK_from_kNNValidateK_Analysis);
 
 end
 
@@ -94,11 +100,13 @@ sum(predictedLetter==labels)/n % Print % score
 % Create Confusion Matrix
 conf = confusionmat(labels, predictedLetter);
 % Normalizing to the amount of each test letter
-nConfkNN = conf./(sum(conf,2)*ones(1,m));
-save('nConfkNN','nConfkNN');
-% Print confusion matrix
-printLabels = '32 49 50 51 52 53 54 55 56 57 58';
-printmat(nConfkNN, 'Confusion matrix', printLabels, printLabels)
+if(m == 11) % Chech if labels are normalized
+    nConfkNN = conf./(sum(conf,2)*ones(1,m));
+    save('nConfkNN','nConfkNN');
+    % Print confusion matrix
+    printLabels = '32 49 50 51 52 53 54 55 56 57 58';
+    printmat(nConfkNN, 'Confusion matrix', printLabels, printLabels)
+end
 end
 
 function [optimalK, kNNscore, rloss, kloss]=kNNValidateK(features, labels)
