@@ -2,104 +2,143 @@ function baseline_knn
 %% Train and retrieve result of kNearestNeighbor
 
 % Load data
-load('data_procd_split__basis')
+load('_data_procd__basis')
+
+% Set parameter based on validation results
+k = 5; 
+% This was overall the optimal k for left, right and both respectively
 
 %% Both
 % Find best value of parameter k
-%k_max = 30;
-%optimalK = kNNValidateK(features_validation, ...
-%    labels_validation, features_test, labels_test, k_max);
+%[optimalK_both, kNNscore_both, rloss_both, kloss_both] = kNNValidateK(...
+%    features_all_processed, labels_all_processed);
+%save('valid_data_both', ...
+%    'optimalK_both', 'kNNscore_both', 'rloss_both', 'kloss_both');
 
-% Chosen k based on validation data results
-k = 6;
 % Perform training and classification
-voteKNN = kNearestNeighbor(features_train, ... 
-    labels_train, features_test, labels_test, k);
+voteKNN = kNearestNeighbor(features_all_processed, ... 
+    labels_all_processed, k);
+
 %% Left
 % Find best value of parameter k
-k_max = 30;
-optimalK = kNNValidateK(features_left_validation, ...
-    labels_left_validation, features_left_test, labels_left_test, k_max);
+%[optimalK_left, kNNscore_left, rloss_left, kloss_left] = kNNValidateK(...
+%    features_left_processed, labels_left_processed);
+%save('valid_data_left', ...
+%    'optimalK_left', 'kNNscore_left', 'rloss_left', 'kloss_left');
 
-% Chosen k based on validation data results
-k = 3;
 % Perform training and classification
-voteKNN = kNearestNeighbor(features_left_train, ... 
-    labels_left_train, features_left_test, labels_left_test, k);
+voteKNN = kNearestNeighbor(features_left_processed, ... 
+    labels_left_processed, k);
 
 %% Right
 % Find best value of parameter k
-k_max = 30;
-optimalK = kNNValidateK(features_right_validation, ...
-    labels_right_validation, features_right_test, labels_right_test, k_max);
+%[optimalK_right, kNNscore_right, rloss_right, kloss_right] = kNNValidateK(...
+%    features_right_processed, labels_right_processed);
+%save('valid_data_right', ...
+%    'optimalK_right', 'kNNscore_right', 'rloss_right', 'kloss_right');
 
-% Chosen k based on validation data results
-k = 6;
 % Perform training and classification
-voteKNN = kNearestNeighbor(features_right_train, ... 
-    labels_right_train, features_right_test, labels_right_test, k);
+voteKNN = kNearestNeighbor(features_right_processed, ... 
+    labels_right_processed, k);
+
+%% After feature extraction
+
+% Load data to test
+%load('right_lda_norm')                 % k: Result: 
+%load('right_pca_norm')                 % k: Result:
+%load('right_preprocessed_norm')        % k: Result:
+%load('left_lda_norm')                  % k: Result:
+%load('left_pca_norm')                  % k: Result:
+%load('left_preprocessed_norm')         % k: Result: 
 
 end
 
 
-function vote=kNearestNeighbor(featuresTrain, labelsTrain, featuresTest, labelsTest, optimalK)
+function vote=kNearestNeighbor(features, labels, optimalK)
 %% Create and score the kNN classifier
-knn = ClassificationKNN.fit(featuresTrain, labelsTrain,...
-    'NumNeighbors',optimalK,'BreakTies','nearest');
+% Create the kNN classifier on all data
+knn = ClassificationKNN.fit(features, labels, 'NumNeighbors', optimalK);
+% Resubstitution Loss
+resubLoss(knn)
 
-% Test on remaining data
-predictedLetter = knn.predict(featuresTest);
-% Establish prediction
-m = max(labelsTrain);
-[n d] = size(featuresTest);
+% Current resubstitution loss:
+% Both:     0.042620509957186
+% Left:     0.053902662993582
+% Right:    0.064913871260204
+
+% Cross validation 10-fold - Predict on all data
+cvknn = crossval(knn, 'KFold', 10);
+kfoldLoss(cvknn)
+
+% Current kfold error rate:
+% Both:     0.058812581425637
+% Left:     0.079981634527103
+% Right:    0.092203082502274
+
+predictedLetter = kfoldPredict(cvknn);
+% Setup vote matrixs
+m = max(labels);
+n = size(labels, 1);
 vote=zeros(n,m);
 for i=1:n
     vote(i,predictedLetter(i))=1;
 end
 % Calc and Post correctness percentage
-sum(predictedLetter==labelsTest)/n % Print % score
+sum(predictedLetter==labels)/n % Print % score
 
 % Current score: 
-% Both:     0.941860465116279
-% Left:     0.915977961432507
-% Right:    0.907978241160471
+% Both:     0.941187418574353
+% Left:     0.920018365472911
+% Right:    0.907796917497734
 
 % Create Confusion Matrix
-conf = confusionmat(labelsTest, predictedLetter);
+conf = confusionmat(labels, predictedLetter);
 % Normalizing to the amount of each test letter
 nConfkNN = conf./(sum(conf,2)*ones(1,m));
 save('nConfkNN','nConfkNN');
 % Print confusion matrix
-labels = '32 49 50 51 52 53 54 55 56 57 58';
-printmat(nConfkNN, 'Confusion matrix', labels, labels)
+printLabels = '32 49 50 51 52 53 54 55 56 57 58';
+printmat(nConfkNN, 'Confusion matrix', printLabels, printLabels)
 end
 
-function optimalK=kNNValidateK(featuresValid, labelsValid, featuresTest, labelsTest, k_max)
-%% Validation [NumNeighbours Prediction], 10% validation data
-% Loop through kNN varying k from 1 to k_max
+function [optimalK, kNNscore, rloss, kloss]=kNNValidateK(features, labels)
+%% Validation [NumNeighbours Prediction], 10-Fold Cross-Validation
+% Loop through kNN varying k from 1 to k_max to determine optimal k
+
+% Allocate
+k_max = 10;
+rloss = zeros(k_max,1);
+kloss = zeros(k_max,1);
 kNNscore = zeros(k_max,1);
 for k=1:k_max
     % Create the kNN classifier
-    knn = ClassificationKNN.fit(featuresValid, labelsValid,...
-        'NumNeighbors',k,'BreakTies','nearest');
-    % Test on remaining data
-    predictedLetter = knn.predict(featuresTest);
+    knn = ClassificationKNN.fit(features, labels, 'NumNeighbors', k);
+    % Resubstitution Loss
+    rloss(k) = resubLoss(knn);
+    % Cross validation
+    cvknn = crossval(knn, 'KFold', 10);
+    kloss(k) = kfoldLoss(cvknn);
+    predictedLetter = kfoldPredict(cvknn);
     % Establish prediction overview
-    m = max(labelsValid);
-    [n d] = size(featuresTest);
+    m = max(labels);
+    n = size(labels,1);
     vote=zeros(n,m);
     for i=1:n
         vote(i,predictedLetter(i))=1;
     end
     % Calc and print correctness with corresponding k
-    kNNscore(k) = sum(predictedLetter==labelsTest)/n; % Print % score
+    kNNscore(k) = sum(predictedLetter==labels)/n; % Print % score
 end
-
 % Plot results
 figure
 plot(kNNscore)
+figure
+plot(rloss);
+figure
+plot(kloss)
 % Print results
-kNNscore
 [highest_performance, optimalK] = max(kNNscore)
+[lowest_resub_error, optimalK] = min(rloss)
+[lowest_kfold_error, optimalK] = min(kloss)
 
 end

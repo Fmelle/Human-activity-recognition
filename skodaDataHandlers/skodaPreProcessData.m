@@ -34,12 +34,12 @@ end
 % Randomize data
 
 % Establish processed data set with normalized labels
-data_processedsed = [normalizeLabels(label_slide) feat_slide];
+data_processed = [normalizeLabels(label_slide) feat_slide];
 % Randomize processed data
-data_processedsed_random = data_processedsed(randperm(size(data_processedsed,1)),:);
+data_processed_random = data_processed(randperm(size(data_processed,1)),:);
 % Divide randomized data into labels and features
-labels_all_processed = data_processedsed_random(:,1);
-features_all_processed = data_processedsed_random(:,2:end);
+labels_all_processed = data_processed_random(:,1);
+features_all_processed = data_processed_random(:,2:end);
 
 %% Left
 index_left = 1;
@@ -63,12 +63,12 @@ end
 % Randomize data
 
 % Establish processed data set with normalized labels
-data_processedsed = [normalizeLabels(label_left_slide) feat_left_slide];
+data_processed = [normalizeLabels(label_left_slide) feat_left_slide];
 % Randomize processed data
-data_processedsed_random = data_processedsed(randperm(size(data_processedsed,1)),:);
+data_processed_random = data_processed(randperm(size(data_processed,1)),:);
 % Divide randomized data into labels and features
-labels_left_processed = data_processedsed_random(:,1);
-features_left_processed = data_processedsed_random(:,2:end);
+labels_left_processed = data_processed_random(:,1);
+features_left_processed = data_processed_random(:,2:end);
 
 %% Right
 index_right = 1;
@@ -92,12 +92,12 @@ end
 % Randomize data
 
 % Establish processed data set with normalized labels
-data_processedsed = [normalizeLabels(label_right_slide) feat_right_slide];
+data_processed = [normalizeLabels(label_right_slide) feat_right_slide];
 % Randomize processed data
-data_processedsed_random = data_processedsed(randperm(size(data_processedsed,1)),:);
+data_processed_random = data_processed(randperm(size(data_processed,1)),:);
 % Divide randomized data into labels and features
-labels_right_processed = data_processedsed_random(:,1);
-features_right_processed = data_processedsed_random(:,2:end);
+labels_right_processed = data_processed_random(:,1);
+features_right_processed = data_processed_random(:,2:end);
 
 %% Save results
 
