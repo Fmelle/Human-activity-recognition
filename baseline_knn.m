@@ -2,7 +2,7 @@ function baseline_knn
 %% Train and retrieve result of kNearestNeighbor
 
 % Load data
-load('_data_procd__basis')
+load('EstablishedDataForBaseline/_data_procd__basis')
 
 % Set parameter based on validation results
 k = 5; 
@@ -16,8 +16,8 @@ k = 5;
 %    'optimalK_both', 'kNNscore_both', 'rloss_both', 'kloss_both');
 
 % Perform training and classification
-%voteKNN = kNearestNeighbor(features_all_processed, ... 
-%    labels_all_processed, k);
+kNearestNeighbor(features_all_processed, ... 
+    labels_all_processed, k);
 
 %% Left
 % Find best value of parameter k
@@ -27,8 +27,8 @@ k = 5;
 %    'optimalK_left', 'kNNscore_left', 'rloss_left', 'kloss_left');
 
 % Perform training and classification
-%voteKNN = kNearestNeighbor(features_left_processed, ... 
-%    labels_left_processed, k);
+kNearestNeighbor(features_left_processed, ... 
+    labels_left_processed, k);
 
 %% Right
 % Find best value of parameter k
@@ -38,8 +38,8 @@ k = 5;
 %    'optimalK_right', 'kNNscore_right', 'rloss_right', 'kloss_right');
 
 % Perform training and classification
-%voteKNN = kNearestNeighbor(features_right_processed, ... 
-%    labels_right_processed, k);
+kNearestNeighbor(features_right_processed, ... 
+    labels_right_processed, k);
 
 %% After feature extraction
 

@@ -24,12 +24,12 @@ Resulting .mat-files:
 
 Current baseline score:
 * kNN (10-fold Cross-Validation):
-- Both:     0.941187418574353
-- Left:     0.920018365472911
-- Right:    0.907796917497734
+Both:     0.941187418574353
+Left:     0.920018365472911
+Right:    0.907796917497734
 
 * SVM:
-- Both:	    x
-- Left:     x
-- Right:    x
+Both:	  x
+Left:     x
+Right:    x
 
