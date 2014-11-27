@@ -1,5 +1,5 @@
 function baseline_knn
-%% Train and retrieve result of kNearestNeighbor
+%% Train and retrieve result of a 10-fold kNearestNeighbor classifier
 
 % Load data
 load('EstablishedDataForBaseline/_data_procd__basis')
@@ -9,39 +9,48 @@ k = 5;
 % This was overall the optimal k for left, right and both respectively
 
 %% Both
-% Find best value of parameter k
+% Find best value of parameter k (Results yield k = 5)
 %[optimalK_both, kNNscore_both, rloss_both, kloss_both] = kNNValidateK(...
 %    features_all_processed, labels_all_processed);
 %save('valid_data_both', ...
 %    'optimalK_both', 'kNNscore_both', 'rloss_both', 'kloss_both');
 
 % Perform training and classification
-kNearestNeighbor(features_all_processed, ... 
+nConfkNN_both = kNearestNeighbor(features_all_processed, ...
     labels_all_processed, k);
+% Save and print confusion matrix
+% save('nConfkNN_both','nConfkNN_both');
+% printConfMat(nConfkNN_both)
 
 %% Left
-% Find best value of parameter k
+% Find best value of parameter k (Results yield k = 3)
 %[optimalK_left, kNNscore_left, rloss_left, kloss_left] = kNNValidateK(...
 %    features_left_processed, labels_left_processed);
 %save('valid_data_left', ...
 %    'optimalK_left', 'kNNscore_left', 'rloss_left', 'kloss_left');
 
 % Perform training and classification
-kNearestNeighbor(features_left_processed, ... 
+nConfkNN_left = kNearestNeighbor(features_left_processed, ...
     labels_left_processed, k);
+% Save and print confusion matrix
+% save('nConfkNN_left','nConfkNN_left');
+% printConfMat(nConfkNN_left)
 
 %% Right
-% Find best value of parameter k
+% Find best value of parameter k (Results yield k = 3)
 %[optimalK_right, kNNscore_right, rloss_right, kloss_right] = kNNValidateK(...
 %    features_right_processed, labels_right_processed);
 %save('valid_data_right', ...
 %    'optimalK_right', 'kNNscore_right', 'rloss_right', 'kloss_right');
 
 % Perform training and classification
-kNearestNeighbor(features_right_processed, ... 
+nConfkNN_right = kNearestNeighbor(features_right_processed, ...
     labels_right_processed, k);
+% Save and print confusion matrix
+% save('nConfkNN_right','nConfkNN_right');
+% printConfMat(nConfkNN_right)
 
-%% After feature extraction
+%% Test on post feature selection data
 
 % Load data to test
 %load('right_pca.data')                  % k: 3 Result: 0.868763502989499
@@ -52,15 +61,19 @@ kNearestNeighbor(features_right_processed, ...
 %load('left_lda.data')                   % k: 7 Result: 0.953480077448283
 
 % Execution
-% features = data(:,2:end);
-% labels = data(:,1);
-% kNNValidateK(features, labels);
-% kNearestNeighbor(features, labels, optimalK_from_kNNValidateK_Analysis);
+%features = data(:,2:end); % Data should be changed to corresponding above
+%labels = skodaNormalizeLabels(data(:,1));
+%kNNValidateK(features, labels);
+%kNearestNeighbor(features, labels, optimalK_from_kNNValidateK_Analysis);
+
+%% Establish results based on 10%, 20%, .., 90%, 100% data
+
+
 
 end
 
 
-function vote=kNearestNeighbor(features, labels, optimalK)
+function nConfkNN=kNearestNeighbor(features, labels, optimalK)
 %% Create and score the kNN classifier
 % Create the kNN classifier on all data
 knn = ClassificationKNN.fit(features, labels, 'NumNeighbors', optimalK);
@@ -100,13 +113,8 @@ sum(predictedLetter==labels)/n % Print % score
 % Create Confusion Matrix
 conf = confusionmat(labels, predictedLetter);
 % Normalizing to the amount of each test letter
-if(m == 11) % Chech if labels are normalized
-    nConfkNN = conf./(sum(conf,2)*ones(1,m));
-    save('nConfkNN','nConfkNN');
-    % Print confusion matrix
-    printLabels = '32 49 50 51 52 53 54 55 56 57 58';
-    printmat(nConfkNN, 'Confusion matrix', printLabels, printLabels)
-end
+nConfkNN = conf./(sum(conf,2)*ones(1,m));
+
 end
 
 function [optimalK, kNNscore, rloss, kloss]=kNNValidateK(features, labels)
@@ -148,5 +156,14 @@ plot(kloss)
 [highest_performance, optimalK] = max(kNNscore)
 [lowest_resub_error, optimalK] = min(rloss)
 [lowest_kfold_error, optimalK] = min(kloss)
+
+end
+
+function confmat = printConfMat(nConfkNN)
+%% Print confusion matrix for per activity evaluation
+% Set original labels
+printLabels = '32 49 50 51 52 53 54 55 56 57 58';
+% Print confusion matrix
+confmat = printmat(nConfkNN, 'Confusion matrix', printLabels, printLabels)
 
 end

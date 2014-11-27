@@ -34,7 +34,7 @@ end
 % Randomize data
 
 % Establish processed data set with normalized labels
-data_processed = [normalizeLabels(label_slide) feat_slide];
+data_processed = [skodaNormalizeLabels(label_slide) feat_slide];
 % Randomize processed data
 data_processed_random = data_processed(randperm(size(data_processed,1)),:);
 % Divide randomized data into labels and features
@@ -63,7 +63,7 @@ end
 % Randomize data
 
 % Establish processed data set with normalized labels
-data_processed = [normalizeLabels(label_left_slide) feat_left_slide];
+data_processed = [skodaNormalizeLabels(label_left_slide) feat_left_slide];
 % Randomize processed data
 data_processed_random = data_processed(randperm(size(data_processed,1)),:);
 % Divide randomized data into labels and features
@@ -92,7 +92,7 @@ end
 % Randomize data
 
 % Establish processed data set with normalized labels
-data_processed = [normalizeLabels(label_right_slide) feat_right_slide];
+data_processed = [skodaNormalizeLabels(label_right_slide) feat_right_slide];
 % Randomize processed data
 data_processed_random = data_processed(randperm(size(data_processed,1)),:);
 % Divide randomized data into labels and features
@@ -108,8 +108,9 @@ save('_data_procd', ...
 
 end
 
-function stdLabels=normalizeLabels(labels)
-% Replace a given skoda activity label with normalized value
+function stdLabels = skodaNormalizeLabels(labels)
+% NORMALIZELABELS Label normalization
+%   Replace a given skoda activity label with normalized value
 stdLabels = labels;
 for i=1:length(labels)
     switch labels(i,1)
@@ -139,4 +140,5 @@ for i=1:length(labels)
             disp('unknown label encountered');
     end
 end
+
 end
