@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title>cpclass documentation</title>
+</head>
+<body>
+<h1 style="font-weight: normal; text-align: center;">Activity
+recognition dataset - Skoda Mini Checkpoint</h1>
+<div style="text-align: center;">
+<address>Daniel Roggen, Wearable Computing Laboratory, ETH Zurich<br>
+<a href="mailto:droggen@gmail.com">droggen@gmail.com</a><br>
+Initial documentation: 24.03.2009<br>
+Last updated: 06.09.2010<br>
+</address>
+</div>
+<br>
+<h1>Description</h1>
+This dataset contains 10 manipulative gestures performed in a car
+maintenance scenario.<br>
+They are a subset of the 46 activities performed in the factory in one
+of the quality control checkpoints [Stiefmeier07]<br>
+<br>
+This dataset was initially collected to investigate the use of ensemble
+classifiers (fusion of multiple classifier decision operating on
+individual sensor nodes) in activity recognition. <br>
+In particular: resilience to faults; performance scaling with number of
+sensors, power-performance management [Zappi07,Zappi08].<br>
+<h2>Availability</h2>
+This dataset can be freely used in publications provided the following
+paper is cited: [Zappi08].<br>
+<h2>Sensors</h2>
+This dataset contains 10 classes, recorded with a 2x10 USB sensors
+placed on the left and right upper and lower arm.<br>
+<br>
+The locations of the sensors on the arms is documented in the figure.
+Note that the numbering of the sensors on the arms has been partially
+lost. <br>
+This means we don't know from the dataset which is the datastream
+corresponding to the locations indicated in the figure. Left or right
+hand is known. (There is a small subset for which the placement is
+actually known. Contact us to inquire about this.)<br>
+<div style="text-align: center;"><img
+ style="width: 251px; height: 210px;"
+ alt="Location of the sensor on the body" src="skoda-data-desc-img/Body_Sensors.png"><br>
+</div>
+<br>
+<h2>Activities</h2>
+<ul>
+  <li>10 manipulative gestures in activities in car maintenance</li>
+  <li>1 subject</li>
+  <li>70 instances per activities</li>
+  <li>Recording is about 3h long.</li>
+</ul>
+<div style="text-align: center;"><img
+ style="width: 406px; height: 594px;" alt="10 activiteis"
+ src="skoda-data-desc-img/activities_small.jpg"><br>
+</div>
+<br>
+<h2><br>
+</h2>
+<h2>Files</h2>
+<h3>Dataset original cleaned</h3>
+<br>
+right_classall_clean.mat and left_classall_clean.mat: matlab .mat files
+with original datafor right and left arm sensors<br>
+<br>
+Load into matlab with the load command.<br>
+<br>
+Variables loaded: right_classall_clean and left_classall_clean<br>
+<br>
+Matrix format: one line per sample.<br>
+<br>
+<ul>
+  <li>Column 1: label</li>
+  <li>Column 2+s*7: sensor id</li>
+  <li>Column 2+s*7+1: X acceleration calibrated</li>
+  <li>Column 2+s*7+2: Y acceleration calibrated</li>
+  <li>Column 2+s*7+3: Z acceleration calibrated</li>
+  <li>Column 2+s*7+4: X acceleration raw</li>
+  <li>Column 2+s*7+5: Y acceleration raw</li>
+  <li>Column 2+s*7+6: Z acceleration raw</li>
+</ul>
+<br>
+with s=0...29 are the sensor axis (10 3-axis sensors = 10x3 = 30 axis).
+Sensor node number is mod(s,3).<br>
+Calibrated acceleration means acceleration in milli-g units (1000 =
+earth gravity vector).<br>
+Raw acceleration is ADC readout.<br>
+<br>
+label value: <br>
+<ul>
+  <li>32 null class</li>
+  <li>48 write on notepad</li>
+  <li>49 open hood</li>
+  <li>50 close hood</li>
+  <li>51 check gaps on the front door</li>
+  <li>52 open left front door</li>
+  <li>53 close left front door</li>
+  <li>54 close both left door</li>
+  <li>55 check trunk gaps</li>
+  <li>56 open and close trunk</li>
+  <li>57 check steering wheel</li>
+</ul>
+<br>
+<h3>Dataset segmented</h3>
+dataset_cp_2007_12.mat: segmented dataset<br>
+<br>
+Load with matlab load command.<br>
+<br>
+Variables loaded: dataset_left, dataset_right<br>
+<br>
+Variable format:<br>
+<br>
+dataset_xx{axisnumber}{classnumber}{instancenumber} is a vector with
+calibrated acceleration data; length of vector is gesture length
+dependent.<br>
+<br>
+<h2>References</h2>
+<ul>
+  <li>[Zappi07] P.&nbsp;Zappi, T.&nbsp;Stiefmeier, E.&nbsp;Farella,
+D.&nbsp;Roggen, L.&nbsp;Benini, and G.&nbsp;Tr&ouml;ster. <b>Activity
+Recognition from On-Body Sensors by Classifier Fusion: Sensor
+Scalability and Robustness</b>. In <em>3rd Int. Conf. on Intelligent
+Sensors, Sensor Networks, and Information Processing (ISSNIP)</em>,
+pages 281-286, 2007.<br>
+  </li>
+  <li>[Zappi08] P.&nbsp;Zappi, C.&nbsp;Lombriser, E.&nbsp;Farella,
+D.&nbsp;Roggen, L.&nbsp;Benini, and G.&nbsp;Tr&ouml;ster. <b>Activity
+recognition from on-body sensors: accuracy-power trade-off by dynamic
+sensor selection</b>. In R.&nbsp;Verdone, editor, <em>5th European
+Conf. on Wireless Sensor Networks (EWSN 2008)</em>, pages 17-33.
+Springer, 2008.</li>
+  <li>[Stiefmeier07] T. Stiefmeier, D. Roggen, G. Tr&ouml;ster. <span
+ style="font-weight: bold;">Fusion of string-matched templates for
+continuous activity recognition</span>. <span
+ style="font-style: italic;">In 11th IEEE International Symposium on
+Wearable Computers</span>. pages 41-44, 2007</li>
+</ul>
+</body>
+</html>
