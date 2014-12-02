@@ -11,7 +11,7 @@ Current Data:
 -------------
 - left - Only left arm sensors
 - right - Only right arm sensors
-- all (All 30 sensors (10x (x,y,z)) combining the above data sets
+- all (All 60 sensors (2x10x(x,y,z)) combining the above data sets
 
 Only using raw data from original set.
 

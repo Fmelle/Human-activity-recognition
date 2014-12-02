@@ -19,8 +19,9 @@ k = 5;
 nConfkNN_both = kNearestNeighbor(features_all_processed, ...
     labels_all_processed, k);
 % Save and print confusion matrix
-% save('nConfkNN_both','nConfkNN_both');
-% printConfMat(nConfkNN_both)
+disp('Both conf mat')
+save('nConfkNN_both','nConfkNN_both');
+printConfMat(nConfkNN_both)
 
 %% Left
 % Find best value of parameter k (Results yield k = 3)
@@ -33,8 +34,9 @@ nConfkNN_both = kNearestNeighbor(features_all_processed, ...
 nConfkNN_left = kNearestNeighbor(features_left_processed, ...
     labels_left_processed, k);
 % Save and print confusion matrix
-% save('nConfkNN_left','nConfkNN_left');
-% printConfMat(nConfkNN_left)
+disp('Left conf mat')
+save('nConfkNN_left','nConfkNN_left');
+printConfMat(nConfkNN_left)
 
 %% Right
 % Find best value of parameter k (Results yield k = 3)
@@ -47,24 +49,54 @@ nConfkNN_left = kNearestNeighbor(features_left_processed, ...
 nConfkNN_right = kNearestNeighbor(features_right_processed, ...
     labels_right_processed, k);
 % Save and print confusion matrix
-% save('nConfkNN_right','nConfkNN_right');
-% printConfMat(nConfkNN_right)
+disp('Right conf mat')
+save('nConfkNN_right','nConfkNN_right');
+printConfMat(nConfkNN_right)
 
 %% Test on post feature selection data
 
 % Load data to test
-%load('right_pca.data')                  % k: 3 Result: 0.868763502989499
 %load('left_pca.data')                   % k: 3 Result: 0.905278711912769
-%load('right_preprocessed.data')         % k: 3 Result: 0.879163945133899
+%load('right_pca.data')                  % k: 3 Result: 0.868763502989499
 %load('left_preprocessed.data')          % k: 3 Result: 0.910323040864160
-%load('right_lda.data')                  % k: 7 Result: 0.944581218911722
-%load('left_lda.data')                   % k: 7 Result: 0.953480077448283
+%load('right_preprocessed.data')         % k: 3 Result: 0.879163945133899
 
+
+load('left_lda.data')  % k: 7 Result: 0.953480077448283
 % Execution
-%features = data(:,2:end); % Data should be changed to corresponding above
-%labels = skodaNormalizeLabels(data(:,1));
-%kNNValidateK(features, labels);
-%kNearestNeighbor(features, labels, optimalK_from_kNNValidateK_Analysis);
+features = left_lda(:,2:end); % Data should be changed to corresponding above
+labels = skodaNormalizeLabels(left_lda(:,1));
+% kNNValidateK(features, labels);
+nConfkNN_left_lda = kNearestNeighbor(features, labels, 7);
+% Save and print confusion matrix
+disp('Left LDA conf mat')
+save('nConfkNN_left_lda','nConfkNN_left_lda');
+printConfMat(nConfkNN_left_lda)
+
+load('right_lda.data') % k: 7 Result: 0.944581218911722
+% Execution
+features = right_lda(:,2:end); % Data should be changed to corresponding above
+labels = skodaNormalizeLabels(right_lda(:,1));
+% kNNValidateK(features, labels);
+nConfkNN_right_lda = kNearestNeighbor(features, labels, 7);
+% Save and print confusion matrix
+disp('Right LDA conf mat')
+save('nConfkNN_right_lda','nConfkNN_right_lda');
+printConfMat(nConfkNN_right_lda)
+
+%% Compare performance
+
+% Improvement right
+nConfkNN_right_imp = nConfkNN_right_lda - nConfkNN_right;
+disp('Right conf mat improve')
+save('nConfkNN_right_imp','nConfkNN_right_imp');
+printConfMat(nConfkNN_right_imp)
+
+% Improvement left
+nConfkNN_left_imp = nConfkNN_left_lda - nConfkNN_left;
+disp('Left conf mat improve')
+save('nConfkNN_left_imp','nConfkNN_left_imp');
+printConfMat(nConfkNN_left_imp)
 
 %% Establish results based on 10%, 20%, .., 90%, 100% data
 
@@ -159,11 +191,11 @@ plot(kloss)
 
 end
 
-function confmat = printConfMat(nConfkNN)
+function printConfMat(nConfkNN)
 %% Print confusion matrix for per activity evaluation
 % Set original labels
-printLabels = '32 49 50 51 52 53 54 55 56 57 58';
+printLabels = '32 48 49 50 51 52 53 54 55 56 57';
 % Print confusion matrix
-confmat = printmat(nConfkNN, 'Confusion matrix', printLabels, printLabels)
+printmat(nConfkNN, 'Confusion matrix', printLabels, printLabels)
 
 end
