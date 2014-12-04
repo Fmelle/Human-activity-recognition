@@ -1,11 +1,13 @@
 Human Activity Recognition with Mobile Sensors
 ==============================================
 
-This project aims at learning and classifying human activity recorded by multiple mobile accelerometers equally spread on both arms, using the Activity Recognition Dataset "Skoda Mini Checkpoint" (see skoda-data-description.html for more info).
+This project aims at learning and classifying human activity recorded by multiple mobile accelerometers equally spread on both arms, using the Activity Recognition Dataset "Skoda Mini Checkpoint" (see skoda-data-description.html for more info and ways to retrieve as it is not contained in this repository).
 
 In combination with another team aiming at performing Feature Selection through LDA and PCA on the same data this part of the project aims at establishing a strong baseline evaluation that will challenge the Feature Selection methods thoroughly. The baseline evaluation also include studies of which activities that improve the most and the least with the deeper Feature Selection methods.
 
 Further studies include the iterative process of including 10%, 20%, 30% .. data to study the neccesity of data amount to establish a useful classification model looking at which activities require more data and less to be determined with a high success.
+
+A first stable version has been established under v1.0.
 
 Current Data: 
 -------------
