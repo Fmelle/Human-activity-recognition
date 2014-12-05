@@ -24,7 +24,7 @@ save('nConfkNN_both','nConfkNN_both');
 printConfMat(nConfkNN_both)
 figure
 surf(nConfkNN_both)
-title(['nConfkNN both'])
+title(['Confusion matrix for Combined dataset'])
 
 %% Left
 % Find best value of parameter k (Results yield k = 3)
@@ -42,7 +42,7 @@ save('nConfkNN_left','nConfkNN_left');
 printConfMat(nConfkNN_left)
 figure
 surf(nConfkNN_left)
-title(['nConfkNN left'])
+title(['Confusion matrix for Left dataset'])
 
 %% Right
 % Find best value of parameter k (Results yield k = 3)
@@ -60,7 +60,7 @@ save('nConfkNN_right','nConfkNN_right');
 printConfMat(nConfkNN_right)
 figure
 surf(nConfkNN_right)
-title(['nConfkNN right'])
+title(['Confusion matrix for Right dataset'])
 
 %% Test on post feature selection data
 
@@ -71,7 +71,9 @@ title(['nConfkNN right'])
 %load('right_preprocessed.data')         % k: 3 Result: 0.879163945133899
 
 
-load('left_lda.data')  % k: 7 Result: 0.953480077448283
+load('left_lda.data')  
+% k: 7 Result: 0.953480077448283 Loss: 0.046927545093232
+
 % Execution
 features = left_lda(:,2:end); % Data should be changed to corresponding above
 labels = skodaNormalizeLabels(left_lda(:,1));
@@ -83,9 +85,10 @@ save('nConfkNN_left_lda','nConfkNN_left_lda');
 printConfMat(nConfkNN_left_lda)
 figure
 surf(nConfkNN_left_lda)
-title(['nConfkNN left lda'])
+title(['Confusion matrix for Left LDA dataset'])
 
-load('right_lda.data') % k: 7 Result: 0.944581218911722
+load('right_lda.data') 
+% k: 7 Result: 0.944581218911722 Loss: 0.055469024770125
 % Execution
 features = right_lda(:,2:end); % Data should be changed to corresponding above
 labels = skodaNormalizeLabels(right_lda(:,1));
@@ -97,7 +100,7 @@ save('nConfkNN_right_lda','nConfkNN_right_lda');
 printConfMat(nConfkNN_right_lda)
 figure
 surf(nConfkNN_right_lda)
-title(['nConfkNN right lda'])
+title(['Confusion matrix for Right LDA dataset'])
 
 %% Compare performance
 
@@ -126,18 +129,25 @@ score_perc_both = PercentAnalysis(features_all_processed, ...
     labels_all_processed, k, 10);
 figure
 plot(score_perc_both)
+% 10%: Perf 0.846368715083799 Loss 0.153631284916202
+% 60%: Perf 0.932371645726695 Loss 0.067628354273311
 save('score_perc_both', 'score_perc_both')
 % Right
 score_perc_right = PercentAnalysis(features_right_processed, ... 
     labels_right_processed, k, 10);
 figure
 plot(score_perc_right)
+% 10%: Perf 0.806890299184044 Loss 0.193109700815951
+% 60%: Perf 0.896041100030221 Loss 0.103958899969793
 save('score_perc_right', 'score_perc_right')
 % Left
 score_perc_left = PercentAnalysis(features_left_processed, ... 
     labels_left_processed, k, 10);
 figure
 plot(score_perc_left)
+% 10%: Perf 0.819100091827365 Loss 0.180899908172631
+% 60%: Perf 0.903428221610040 Loss 0.096571778389948
+% 80%: Perf 0.915289256198347 Loss 0.084710743801644
 save('score_perc_left', 'score_perc_left')
 
 
@@ -161,9 +171,9 @@ cvknn = crossval(knn, 'KFold', 10);
 loss = kfoldLoss(cvknn)
 
 % Current kfold error rate:
-% Both:     0.058812581425637
-% Left:     0.079981634527103
-% Right:    0.092203082502274
+% Both:     0.058533407779629
+% Left:     0.078420569329674
+% Right:    0.091568449682691
 
 predictedLetter = kfoldPredict(cvknn);
 % Setup vote matrixs
@@ -177,9 +187,9 @@ end
 score = sum(predictedLetter==labels)/n % Print % score
 
 % Current score: 
-% Both:     0.941187418574353
-% Left:     0.920018365472911
-% Right:    0.907796917497734
+% Both:     0.941466592220361
+% Left:     0.921579430670340
+% Right:    0.908431550317316
 
 % Create Confusion Matrix
 conf = confusionmat(labels, predictedLetter);
@@ -268,7 +278,7 @@ end
 
 function [dim1, dim2] = getSubPlotDims(partitions)
 % Set the subplot dimentions depending on number of partitions
-if(paritions < 17)
+if(partitions < 17)
     dim2 = 4;
     if(partitions < 13)
         dim1 = 3;
