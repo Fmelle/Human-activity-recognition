@@ -242,18 +242,18 @@ end
 function score_perc = PercentAnalysis(features, labels, k, partitions)
 % Set parameters
 score_perc = zeros(partitions,1);
-%[splot_dim1,splot_dim2] = getSubPlotDims(partitions);
+[splot_dim1,splot_dim2] = getSubPlotDims(partitions);
 
 % Do KNN for each percentage
-%figure
+figure
 for i=1:partitions
     [features_perc, labels_perc] = getPercData(features, ...
         labels, i, partitions);
     [nConfkNN_perc, score_perc(i,1)] = kNearestNeighbor(features_perc, ...
         labels_perc, k);
     % Plot confusion matrices to see evolution of per-acitivty error
-    %subplot(splot_dim1,splot_dim2,i)
-    %surf(nConfkNN_perc)
+    subplot(splot_dim1,splot_dim2,i)
+    surf(nConfkNN_perc)
 end
 
 end
