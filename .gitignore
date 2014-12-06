@@ -4,4 +4,8 @@
 *.mat
 *.data
 *.log
-
+# Report files
+*.bbl
+*.blg
+*.aux
+*.synctex.gz

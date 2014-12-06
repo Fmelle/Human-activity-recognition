@@ -19,26 +19,109 @@ Carnegie Mellon University\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-   The alfa
-
+   With the growing accessibility of accelerometers and movement measurement in our everyday lives largely introduced by smart phones we carry with us to all places the various ways of application are endless. A first step in making this an profitable tool for everyday use is to convert the measurements into something intelligent. Activity Recognition is a rising field where we seek to translate chains of time-series data provided by mobile sensors into specific activities. By intelligently analyzing this data this study seeks to determine what kind of activities are easily or more difficultly recognized using a simple and widely implemented posterior probability measuring classification algorithm.
    
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
-Alfa beta \textit{lol} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis\cite{KorBell}\cite{BellKor}.
+
+\subsection{The Problem}
+In the growing field of \textit{Human Activity Recognition} we find ourselves surrounded with the complex task of successfully and effectively translating endless variations of time-series recorded sensor data into meaningful resources. While we today profit from a large array of applications that to some extent recognizes human activity, most devices  limit themselves to certain specific types of activities in a given context such as sports or specific tasks. There is still a lot of work left to develop an all-understanding intelligence that can comprehend every type of activity induced into sensible information.
+
+\subsection{The Solution}
+In order to address this massive challenge, this research focuses on analyzing what kind of activities that are recognized most effectively, and what kind of activities require more consideration.
+
+Through a simple standardization of an established and widely used dataset for \textit{Human Activity Recognition}, the study seeks to analyze the per-activity performance using the simplest and perhaps most widely used posterior probability classification method of k Nearest Neighbors by looking at the various classification improvements that can be amended to it.
 
 %=====================================================================
 
 \section{Background}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
 
-\subsection{Previous work}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
+\subsection{Dataset}
+For the purpose of researching the proposed problem most efficiently, a well-tested and widely researched dataset was taken into consideration. The Skoda Mini Checkpoint dataset was originally created to investigate the use of ensemble classifiers in activity recognition and has been widely implemented over the past years\cite{Zappi08}. The dataset contains time-series data from a total of 10 USB sensors equally placed and separately recorded on each arm over three hours resulting in about 700,000 data points each representing 33 ms visualized in Figure~\ref{fig:body_sensors}. Every sensor measures over three dimensions simultaneously collecting the effects of a total 10 manipulative gestures performed in a car maintenance scenario, as well as one null activity for reference. The resulting two fully labeled datasets for left and right arm form the basis for our study.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.6\linewidth]{non_tech_imgs/Body_Sensors.png}
+\end{center}
+  \caption{Visualization of the mobile sensors placement.}
+  \label{fig:body_sensors}
+\end{figure}
+
+\subsection{Previous work: }
+
+** Window size, overflow, features to extract
+
+\subsection{Previous work: }
+
+** Algorithms, working with same dataset
+
+
+%------
+
+** When e-mailing Ming Zeng the report for review, ask how he would like to be mentioned.
+
+In this current report that I am mailing you, I have not mentioned your extensive support and advice as the project sponsor and advisor. That is merely because I wanted to ask you personally how you would best like to be mentioned, should it be as a co-author, in a section of the background or in another manner that you find appropriate. 
+
+As a professional M.S. student my experience with paper-style report writing is limited so I didn't have any preliminary idea of how to most elegantly do this..
 
 %=====================================================================
 
-\section{Dataset}
+\section{Overview}
+The study is effectively divided into several main parts, each providing intelligent results towards the issue in question.
+
+\subsection{Baseline Classification Performance}
+In a first time we look closer at the baseline performance of our algorithm once applied most elegantly towards a preprocessed version of the original dataset. This approach serves in providing a ground understanding of how well the simplest evaluation of time-series data performs on a very specific set of a limited number of activities once trained on several repetitions of every activity.
+
+** First: Evaluate dataset: Data-set split into right and left with different number of measurements.
+- Some activities involves one arm more than the other
+- Same sampling rate
+- One additional sensor on right arm than left arm: 10\% more data.
+
+** Look at different confusion matrix to evaluate what activities are takes more damage of this - evaluate performance of left and right arm difference by activities performed - which are hurt on each arm and why can that be (opening left door with right arm etc)
+
+** Look at how different activities are recognized by each arm depending on activity -- right arm on left door etc
+
+** Which activities are the baseline already good at - easy to determine by simple classification and feature extraction tools
+
+** Look at $F_1$ score = $2\frac{precision*recall}{precision + recall}$.
+While the precision simply represents our classification correctness, the recall rate is bound to the sensitivity of our classifier. Looking at every activity it represents the number of activities classified as a specific activity over the actual sum data points labeled for that activity. The F1 score is widely used to evaluate classification schemes for a compromise between sensitivity and precision.
+
+\subsection{Combining The Data}
+The original data provided by \textit{Skoda Mini Checkpoint} does as mentioned contain data separately measured from sensors equally spread and placed on both arms. While it is interesting to evaluate how various activities are recognized with different amounts of success by each arm individually, the study investigates how intelligently merging the two separate datasets improves the recognition. 
+
+This will consequently provide understanding of how more doubling the amount of information or sensors for each measurement increases the general classification performance.
+
+** It makes sense that each activity measure will have begun simultaneously on each arm although one of the arms might have recorded more or less data than the other
+
+** Which activities are immediately easier to determine by combining the data/doubling the sensors - left and right
+
+\subsection{Feature Selection and Dimensionality Reduction}
+When attempting to recognize various activities, different sensors have varying impact on different activities. In collaboration with another team working on the same dataset for \textit{Human Activity Recognition}, the research was enhanced by the possibility of measuring the effect of performing a more extensive feature selection with subsequent dimensionality reduction on the same set of data. 
+
+Looking at the performance of this approach explores the space of improvement in extracting more features while intelligently keeping the ones that should improve the discrimination between the activities and discarding those that make them look more similar.
+
+** Extracting a larger set of features from the time-series data subsequently reduced for optimal classification performance through Linear Discriminant Analysis. LDA efficiently maximizes the mean value of Kullback-Leibler divergence between the activities although assuming Gaussian distribution of the data as well as identical covariance. The technique effectively
+
+** Which activities improves with feature selection
+
+\subsection{Performance Over Different Amounts of Data}
+In a real-world application an implemented algorithm should not only perform very accurately, it will optimally also handle real-time received data from the sensors. To approach this with the provided dataset, the study will look at classification performance for percentage amounts of the original data ranging from 10\% to a maximum 100\%.
+
+The original dataset has been assembled sophisticatedly with the aim of satisfying the need for creating a working classification model with a minimum amount of measurements. Through this approach the study analyzes the compromise between classification performance and efficiency with the idea that less data induces higher computational speed.
+
+** What activities need more data to be determined (10\%, 20\%, ..)
+
+%-----
+
+Conclusion:
+
+** Which activities are generally more confused
+
+%=====================================================================
+
+\section{Preprocessing}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
 
 %=====================================================================

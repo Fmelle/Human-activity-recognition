@@ -168,31 +168,46 @@ resubLoss(knn);
 
 % Cross validation 10-fold - Predict on all data
 cvknn = crossval(knn, 'KFold', 10);
-loss = kfoldLoss(cvknn)
+errorRate = kfoldLoss(cvknn) % Print loss
 
 % Current kfold error rate:
-% Both:     0.058533407779629
-% Left:     0.078420569329674
-% Right:    0.091568449682691
+% Both:     0.058347292015624
+% Left:     0.079614325068885
+% Right:    0.090480507706263
 
-predictedLetter = kfoldPredict(cvknn);
+predictedActivity = kfoldPredict(cvknn);
 % Setup vote matrixs
 m = max(labels);
 n = size(labels, 1);
 vote=zeros(n,m);
 for i=1:n
-    vote(i,predictedLetter(i))=1;
+    vote(i,predictedActivity(i))=1;
 end
 % Calc and Post correctness percentage
-score = sum(predictedLetter==labels)/n % Print % score
+score = sum(predictedActivity==labels)/n % Print score
 
 % Current score: 
-% Both:     0.941466592220361
-% Left:     0.921579430670340
-% Right:    0.908431550317316
+% Both:     0.941652707984366
+% Left:     0.920385674931129
+% Right:    0.909519492293744
+
+% Collect general performance
+perf = classperf(labels, predictedActivity);
+sense = perf.Sensitivity;
+F1 = 2*((score*sense)/(score+sense)) % Print F1
+
+% Current sensitivity:
+% Both:     0.929431299294313
+% Left:     0.920225624496374
+% Right:    0.898533950617284
+
+% Current F1 score: 
+% Both:     0.935502090190829
+% Left:     0.920305642755155
+% Right:    0.903993347960279
 
 % Create Confusion Matrix
-conf = confusionmat(labels, predictedLetter);
+conf = confusionmat(labels, predictedActivity);
 % Normalizing to the amount of each test letter
 nConfkNN = conf./(sum(conf,2)*ones(1,m));
 
