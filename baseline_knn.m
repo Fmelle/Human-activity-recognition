@@ -4,17 +4,13 @@ function baseline_knn
 % Load data
 load('EstablishedDataForBaseline/_data_procd__basis')
 
-% Set parameter based on validation results
-k = 5;
-% This was overall the optimal k for left, right and both respectively
-
 %% Both
 % Find best value of parameter k (Results yield k = 5)
 %[optimalK_both, kNNscore_both, rloss_both, kloss_both] = kNNValidateK(...
 %    features_all_processed, labels_all_processed);
 %save('valid_data_both', ...
 %    'optimalK_both', 'kNNscore_both', 'rloss_both', 'kloss_both');
-
+k = 5;
 % Perform training and classification
 [nConfkNN_both, score_both] = kNearestNeighbor(features_all_processed, ...
     labels_all_processed, k);
@@ -32,7 +28,7 @@ title(['Confusion matrix for Combined dataset'])
 %    features_left_processed, labels_left_processed);
 %save('valid_data_left', ...
 %    'optimalK_left', 'kNNscore_left', 'rloss_left', 'kloss_left');
-
+k = 3;
 % Perform training and classification
 [nConfkNN_left, score_left] = kNearestNeighbor(features_left_processed, ...
     labels_left_processed, k);
@@ -45,12 +41,12 @@ surf(nConfkNN_left)
 title(['Confusion matrix for Left dataset'])
 
 %% Right
-% Find best value of parameter k (Results yield k = 3)
+% Find best value of parameter k (Results yield optimal k = 3)
 %[optimalK_right, kNNscore_right, rloss_right, kloss_right] = kNNValidateK(...
 %    features_right_processed, labels_right_processed);
 %save('valid_data_right', ...
 %    'optimalK_right', 'kNNscore_right', 'rloss_right', 'kloss_right');
-
+k = 3;
 % Perform training and classification
 [nConfkNN_right, score_right] = kNearestNeighbor(features_right_processed, ...
     labels_right_processed, k);
@@ -73,12 +69,12 @@ title(['Confusion matrix for Right dataset'])
 
 load('left_lda.data')  
 % k: 7 Result: 0.953480077448283 Loss: 0.046927545093232
-
+k = 7;
 % Execution
 features = left_lda(:,2:end); % Data should be changed to corresponding above
 labels = skodaNormalizeLabels(left_lda(:,1));
 % kNNValidateK(features, labels);
-[nConfkNN_left_lda, score_left_lda] = kNearestNeighbor(features, labels, 7);
+[nConfkNN_left_lda, score_left_lda] = kNearestNeighbor(features, labels, k);
 % Save and print confusion matrix
 disp('Left LDA conf mat')
 save('nConfkNN_left_lda','nConfkNN_left_lda');
@@ -89,11 +85,12 @@ title(['Confusion matrix for Left LDA dataset'])
 
 load('right_lda.data') 
 % k: 7 Result: 0.944581218911722 Loss: 0.055469024770125
+k = 7;
 % Execution
 features = right_lda(:,2:end); % Data should be changed to corresponding above
 labels = skodaNormalizeLabels(right_lda(:,1));
 % kNNValidateK(features, labels);
-[nConfkNN_right_lda, score_right_lda] = kNearestNeighbor(features, labels, 7);
+[nConfkNN_right_lda, score_right_lda] = kNearestNeighbor(features, labels, k);
 % Save and print confusion matrix
 disp('Right LDA conf mat')
 save('nConfkNN_right_lda','nConfkNN_right_lda');
@@ -125,6 +122,7 @@ title(['nConfkNN left imp'])
 %% Analyze performance based on 10%, 20%, .., 90%, 100% data
 
 % Both
+k = 5;
 score_perc_both = PercentAnalysis(features_all_processed, ... 
     labels_all_processed, k, 10);
 figure
@@ -133,6 +131,7 @@ plot(score_perc_both)
 % 60%: Perf 0.932371645726695 Loss 0.067628354273311
 save('score_perc_both', 'score_perc_both')
 % Right
+k = 3;
 score_perc_right = PercentAnalysis(features_right_processed, ... 
     labels_right_processed, k, 10);
 figure
@@ -141,6 +140,7 @@ plot(score_perc_right)
 % 60%: Perf 0.896041100030221 Loss 0.103958899969793
 save('score_perc_right', 'score_perc_right')
 % Left
+k = 3;
 score_perc_left = PercentAnalysis(features_left_processed, ... 
     labels_left_processed, k, 10);
 figure
@@ -170,7 +170,7 @@ resubLoss(knn);
 cvknn = crossval(knn, 'KFold', 10);
 errorRate = kfoldLoss(cvknn) % Print loss
 
-% Current kfold error rate:
+% Current K-fold error rate:
 % Both:     0.058347292015624
 % Left:     0.079614325068885
 % Right:    0.090480507706263

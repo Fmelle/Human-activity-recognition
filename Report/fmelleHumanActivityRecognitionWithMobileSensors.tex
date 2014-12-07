@@ -44,13 +44,34 @@ For the purpose of researching the proposed problem most efficiently, a well-tes
 
 The dataset contains time-series data from a total of 10 USB sensor accelerometers equally placed and separately recorded on each arm over three hours resulting in about 700,000 data points each representing 33 ms visualized in Figure~\ref{fig:body_sensors}. Every sensor measures over three dimensions simultaneously collecting the effects of a total 10 manipulative gestures performed in a car maintenance scenario, as well as one null activity for reference. The resulting two fully labeled datasets for left and right arm form the basis for our study. 
 
-\begin{figure}[bp]
+\begin{figure}
 \begin{center}
   \includegraphics[width=0.6\linewidth]{non_tech_imgs/Body_Sensors.png}
 \end{center}
   \caption{Visualization of the mobile sensors placement.}
   \label{fig:body_sensors}
 \end{figure}
+
+\begin{table}[bp]
+\centering
+\caption{Mapping of activities to label values.}
+\begin{tabular}{|l|l|}
+\hline
+\text{Activity}          				&\textbf{Label value} 	\\ \hline
+\textbf{Null activity}  				& 32 		 			\\ \hline
+\textbf{Write on notepad}	 			& 48		 			\\ \hline
+\textbf{Open hood}  					& 49 					\\ \hline
+\textbf{Close hood}				 		& 50 					\\ \hline
+\textbf{Check Gaps on the front door} 	& 51 					\\ \hline
+\textbf{Open left front door}	 		& 52 					\\ \hline
+\textbf{Close left front door}			& 53 					\\ \hline
+\textbf{Close both left doors}			& 54 					\\ \hline
+\textbf{Check trunk gaps}				& 55 					\\ \hline
+\textbf{Open and close trunk}			& 56 					\\ \hline
+\textbf{Check steering wheel}			& 57 					\\ \hline
+\end{tabular}
+\label{tab:label_value}
+\end{table}
 
 \subsection{Sliding windows and Feature Extraction}
 Classifying \textit{Human Activity Recognition} data is effectively translating time-series signal data into specifically performed sequences of gestures forming an activity.
@@ -102,9 +123,9 @@ In the terms of developing the most simplistic classification algorithm, the \te
 
 The algorithm is implemented by using \textit{MATLAB}'s publicly available libraries for \textit{KNN}, cross-validation and subsequent visualization and performance analysis. An effort was made to correctly make use of put together all the tools available to allocate time for analysis which is the key part of the study.
 
-The code that went into the implementation of the proposed solution is visible at \url{https://github.com/Fmelle/Human-Activity-Recognition}.
+The code that went into the implementation of the proposed solution is visible at \url{http://tiny.cc/FMSDL14}.
 
-\begin{figure}[t]
+\begin{figure}[bp]
 \begin{center}
   \includegraphics[width=0.6\linewidth]{non_tech_imgs/knn_vis.png}
 \end{center}
@@ -113,10 +134,45 @@ The code that went into the implementation of the proposed solution is visible a
 \end{figure}
 
 \subsection{Configuring the KNN}
-Once partitioned the \textit{KNN} effectively makes use of a 10-fold cross-validation for both determining its parameters and performing the general classification. In a total of ten iterations, it trains on nine of the partitions and tests on one, such that every partition finally is tested and predicted on. This allows us to predict on ever data point that is available to minimize the opportunity for over-fitting the parameter $k$ and maximizing the validity of the performance results.
+Once partitioned the \textit{KNN} effectively makes use of a 10-fold cross-validation for both determining its parameters and performing the general classification. In a total of ten iterations, it trains on nine of the partitions and tests on one. This allows us to predict on ever data point that is available to minimize the opportunity for over-fitting the parameter $k$ and maximizing the validity of the performance results.
 
-** Show and describe evaluation of the parameter k using combined data set as an example
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.6\linewidth]{visual_results/evaluate_k_both_perf.jpg}
+\end{center}
+\caption{Precision evaluation for number of nearest neighbors.}
+\label{fig:eval_k_both_perf}
+\end{figure}
 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.6\linewidth]{visual_results/evaluate_k_both_loss_pred_error.jpg}
+\end{center}
+\caption{Error evaluation for number of nearest neighbors.}
+\label{fig:eval_k_both_error}
+\end{figure}
+
+Evaluating the number of neighbors is a delicate process where several evaluations is taken into account, seeking a compromise between precision and error. Focusing primarily on minimizing the error rate of the classifier every dataset that was evaluated went through the same parameter validation process. With 11 total different classes the process looked at error and performance for $k$ ranging between one and ten voting neighbors, using a reduced dataset with the same 10-fold cross-validation scheme as in the classification.
+
+The process is illustrated for the combined data set in Figure~\ref{fig:eval_k_both_perf} and Figure~\ref{fig:eval_k_both_error}, visualizing the precision and error rate for $k$ respectively. 
+
+As is usual with this type of deterministic association, $k=1$ nearest neighbor is quite prone to overfitting and even excellent results for this value should be ignored. With quite few classes kind of graph output was typical for all the processed datasets. In this example the optimal number of nearest neighbors is easily observed, as both graphs has their most apparent extremity for $k=5$ which is consequently the optimal $k$ for this dataset of combined data from left and right arm. The results regarding all the datasets processed by the validation scheme is displayed in Table~\ref{tab:optimal_k}.
+
+\begin{table}[bp]
+\centering
+\caption{Validation results of optimal nearest neighbors.}
+\begin{tabular}{|l|l|}
+\hline
+           			&\textbf{Optimal $k$} 	\\ \hline
+\textbf{Left arm}  						& 3 		 				\\ \hline
+\textbf{Right arm} 						& 3		 					\\ \hline
+\textbf{Combined}  						& 5 						\\ \hline
+\textbf{Right arm LDA processed} 		& 7 						\\ \hline
+\textbf{Left arm LDA processed} 		& 7 						\\ \hline
+
+\end{tabular}
+\label{tab:optimal_k}
+\end{table}
 
 %=====================================================================
 
@@ -127,7 +183,7 @@ The basis of this study is to first evaluate what the most restrictive classific
 \subsubsection{Left arm evaluation}
 
 
-\begin{figure*}[bp]
+\begin{figure*}
 \begin{center}
   \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
 \end{center}
@@ -137,9 +193,9 @@ The basis of this study is to first evaluate what the most restrictive classific
 
 \subsubsection{Right arm evaluation}
 
-\begin{figure*}[bp]
+\begin{figure*}
 \begin{center}
-  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_right.jpg}
 \end{center}
   \caption{Confusion matrix for right arm performance.}
   \label{fig:conf_right}
@@ -173,6 +229,14 @@ This will consequently provide understanding of how more doubling the amount of 
 ** It makes sense that each activity measure will have begun simultaneously on each arm although one of the arms might have recorded more or less data than the other
 
 ** Which activities are immediately easier to determine by combining the data/doubling the sensors - left and right
+
+\begin{figure*}
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_both.jpg}
+\end{center}
+  \caption{Confusion matrix for right arm performance.}
+  \label{fig:conf_both}
+\end{figure*}
 
 \subsection{Feature Selection and Dimensionality Reduction}
 When attempting to recognize various activities, different sensors have varying impact on different activities. In collaboration with another team working on the same dataset for \textit{Human Activity Recognition}, the research was enhanced by the possibility of measuring the effect of performing a more extensive feature selection with subsequent dimensionality reduction on the same set of data. 
