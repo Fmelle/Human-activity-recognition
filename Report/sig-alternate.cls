@@ -344,7 +344,7 @@
 \newcount\sectioncntr
 \global\sectioncntr=1
 
-\setcounter{secnumdepth}{3}
+\setcounter{secnumdepth}{4}
 
 \def\appendix{\par
 \section*{APPENDIX}

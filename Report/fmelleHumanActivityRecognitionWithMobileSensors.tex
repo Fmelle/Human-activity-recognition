@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[breaklinks=true,bookmarks=false]{hyperref}
 
 \begin{document}
 
@@ -32,16 +33,18 @@ In the growing field of \textit{Human Activity Recognition} we find ourselves su
 \subsection{The Solution}
 In order to address this massive challenge, this research focuses on analyzing what kind of activities that are recognized most effectively, and what kind of activities require more consideration.
 
-Through a simple standardization of an established and widely used dataset for \textit{Human Activity Recognition}, the study seeks to analyze the per-activity performance using the simplest and perhaps most widely used posterior probability classification method of k Nearest Neighbors by looking at the various classification improvements that can be amended to it.
+Through a simple standardization of an established and widely used dataset for \textit{Human Activity Recognition}, the study seeks to analyze the per-activity performance using the simplest and perhaps most widely used posterior probability classification method by looking at the various improvements that can be amended to it.
 
 %=====================================================================
 
 \section{Background}
 
 \subsection{Dataset}
-For the purpose of researching the proposed problem most efficiently, a well-tested and widely researched dataset was taken into consideration. The Skoda Mini Checkpoint dataset was originally created to investigate the use of ensemble classifiers in activity recognition and has been widely implemented over the past years\cite{Zappi08}. The dataset contains time-series data from a total of 10 USB sensors equally placed and separately recorded on each arm over three hours resulting in about 700,000 data points each representing 33 ms visualized in Figure~\ref{fig:body_sensors}. Every sensor measures over three dimensions simultaneously collecting the effects of a total 10 manipulative gestures performed in a car maintenance scenario, as well as one null activity for reference. The resulting two fully labeled datasets for left and right arm form the basis for our study.
+For the purpose of researching the proposed problem most efficiently, a well-tested and widely researched dataset was taken into consideration. The Skoda Mini Checkpoint dataset was originally created to investigate the use of ensemble classifiers in activity recognition and has been widely implemented over the past years\cite{Zappi08}. 
 
-\begin{figure}[t]
+The dataset contains time-series data from a total of 10 USB sensor accelerometers equally placed and separately recorded on each arm over three hours resulting in about 700,000 data points each representing 33 ms visualized in Figure~\ref{fig:body_sensors}. Every sensor measures over three dimensions simultaneously collecting the effects of a total 10 manipulative gestures performed in a car maintenance scenario, as well as one null activity for reference. The resulting two fully labeled datasets for left and right arm form the basis for our study. 
+
+\begin{figure}[bp]
 \begin{center}
   \includegraphics[width=0.6\linewidth]{non_tech_imgs/Body_Sensors.png}
 \end{center}
@@ -49,22 +52,12 @@ For the purpose of researching the proposed problem most efficiently, a well-tes
   \label{fig:body_sensors}
 \end{figure}
 
-\subsection{Previous work: }
+\subsection{Sliding windows and Feature Extraction}
+Classifying \textit{Human Activity Recognition} data is effectively translating time-series signal data into specifically performed sequences of gestures forming an activity.
 
-** Window size, overflow, features to extract
+The first step in establishing a dataset that can be injected into a statistical classifier is to evaluate the time-series data delicately. Inspired by previous approaches, an approach to capture local information for primitive-based AR by sliding windows with overflow was decided upon\cite{Huynh}.
 
-\subsection{Previous work: }
-
-** Algorithms, working with same dataset
-
-
-%------
-
-** When e-mailing Ming Zeng the report for review, ask how he would like to be mentioned.
-
-In this current report that I am mailing you, I have not mentioned your extensive support and advice as the project sponsor and advisor. That is merely because I wanted to ask you personally how you would best like to be mentioned, should it be as a co-author, in a section of the background or in another manner that you find appropriate. 
-
-As a professional M.S. student my experience with paper-style report writing is limited so I didn't have any preliminary idea of how to most elegantly do this..
+With this configuration of the sliding windows, the feature vectors will be assembled by intelligently chosen features as established by previous approaches\cite{Zeng}.
 
 %=====================================================================
 
@@ -72,6 +65,90 @@ As a professional M.S. student my experience with paper-style report writing is 
 The study is effectively divided into several main parts, each providing intelligent results towards the issue in question.
 
 \subsection{Baseline Classification Performance}
+In a first time we look closer at the baseline performance of our algorithm once applied most elegantly towards a preprocessed version of the original dataset. This approach serves in providing a ground understanding of how well the simplest evaluation of time-series data performs on a very specific set of a limited number of activities once trained on several repetitions of every activity.
+
+\subsection{Combining The Data}
+The original data provided by \textit{Skoda Mini Checkpoint} does as mentioned contain data separately measured from sensors equally spread and placed on both arms. While it is interesting to evaluate how various activities are recognized with different amounts of success by each arm individually, the study investigates how intelligently merging the two separate datasets improves the recognition. 
+
+This will consequently provide understanding of how more doubling the amount of information or sensors for each measurement increases the general classification performance.
+
+\subsection{Feature Selection}
+When attempting to recognize various activities, different sensors have varying impact on different activities. In collaboration with another team working on the same dataset for \textit{Human Activity Recognition}, the research was enhanced by the possibility of measuring the effect of performing a more extensive feature selection with subsequent dimensionality reduction on the same set of data. 
+
+Looking at the performance of this approach explores the space of improvement in extracting more features while intelligently keeping the ones that should improve the discrimination between the activities and discarding those that make them look more similar.
+
+\subsection{Performance by Increasing Data Amount}
+In a real-world application an implemented algorithm should not only perform very accurately, it will optimally also handle real-time received data from the sensors. To approach this with the provided dataset, the study will look at classification performance for percentage amounts of the original data ranging from 10\% to a maximum 100\%.
+
+The original dataset has been assembled sophisticatedly with the aim of satisfying the need for creating a working classification model with a minimum amount of measurements. Through this approach the study analyzes the compromise between classification performance and efficiency with the idea that less data induces higher computational speed.
+
+%=====================================================================
+
+\section{Preprocessing Time-Series Data}
+As where the original \textit{Skoda Mini Checkpoint} comes with the measured data in both a calibrated and a raw format, the research focuses on looking at the simplest formulation in only implementing the raw data.
+
+Although quite sophisticated approaches exist in evaluating the sliding window extraction method, this study focuses on mere simplicity for the purpose of developing a baseline and effectively uses a sliding window of 64 data points resulting each counting for about 2 seconds of measurement with 50\% overflow\cite{Zhang}.
+
+Among the more complex feature extraction methods that has been considered by earlier approaches this study again focuses on simplicity. The two most primitive features was thus extracted from each sensor, in mean and standard deviation. This choice supports the goal of evaluating between other forms of improvement, extensive feature extraction.
+
+As the original data is sorted chronologically according to the recording, a next step was needed to randomize the order before partitioning for training and testing. A complete randomization was performed using a simple method implemented in \textit{MATLAB}.
+
+A last step in preparing the data was performing a 10 fold partitioning to prepare for cross-validation implementation in the classification step.
+
+%=====================================================================
+
+\section{Algorithm}
+In the terms of developing the most simplistic classification algorithm, the \textit{k nearest neighbors} was found ideal. Amongst the various posterior probability measuring algorithms this algorithm makes no assumption of the data distribution and performing deterministic association on a adjustable local scope as depicted in Figure~\ref{fig:knn_vis}. This approach justifies its purpose of analyzing which activities that are likely to be misclassified. 
+
+The algorithm is implemented by using \textit{MATLAB}'s publicly available libraries for \textit{KNN}, cross-validation and subsequent visualization and performance analysis. An effort was made to correctly make use of put together all the tools available to allocate time for analysis which is the key part of the study.
+
+The code that went into the implementation of the proposed solution is visible at \url{https://github.com/Fmelle/Human-Activity-Recognition}.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.6\linewidth]{non_tech_imgs/knn_vis.png}
+\end{center}
+  \caption{A visualization of the nearest neighbors method.}
+  \label{fig:knn_vis}
+\end{figure}
+
+\subsection{Configuring the KNN}
+Once partitioned the \textit{KNN} effectively makes use of a 10-fold cross-validation for both determining its parameters and performing the general classification. In a total of ten iterations, it trains on nine of the partitions and tests on one, such that every partition finally is tested and predicted on. This allows us to predict on ever data point that is available to minimize the opportunity for over-fitting the parameter $k$ and maximizing the validity of the performance results.
+
+** Show and describe evaluation of the parameter k using combined data set as an example
+
+
+%=====================================================================
+
+\section{Analysis}
+\subsection{Baseline Classification Performance}
+The basis of this study is to first evaluate what the most restrictive classification method can achieve in terms of each activity. The data provided being divided into two separate sets representing respectively the left and right arm the first iteration looks at the performance towards each of these and evaluates the immediate differences.
+
+\subsubsection{Left arm evaluation}
+
+
+\begin{figure*}[bp]
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
+\end{center}
+  \caption{Confusion matrix for left arm performance.}
+  \label{fig:conf_left}
+\end{figure*}
+
+\subsubsection{Right arm evaluation}
+
+\begin{figure*}[bp]
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
+\end{center}
+  \caption{Confusion matrix for right arm performance.}
+  \label{fig:conf_right}
+\end{figure*}
+
+\subsubsection{Comparative conclusions}
+
+** Conf mat for each arm 
+
 In a first time we look closer at the baseline performance of our algorithm once applied most elegantly towards a preprocessed version of the original dataset. This approach serves in providing a ground understanding of how well the simplest evaluation of time-series data performs on a very specific set of a limited number of activities once trained on several repetitions of every activity.
 
 ** First: Evaluate dataset: Data-set split into right and left with different number of measurements.
@@ -113,27 +190,6 @@ The original dataset has been assembled sophisticatedly with the aim of satisfyi
 
 ** What activities need more data to be determined (10\%, 20\%, ..)
 
-%-----
-
-Conclusion:
-
-** Which activities are generally more confused
-
-%=====================================================================
-
-\section{Preprocessing}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
-
-%=====================================================================
-
-\section{Algorithm}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
-
-%=====================================================================
-
-\section{Analysis}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
-
 %=====================================================================
 
 \section{Results}
@@ -142,7 +198,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scele
 %=====================================================================
 
 \section{Conclusions}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
+
+** Which activities are generally more confused
 
 %=====================================================================
 
