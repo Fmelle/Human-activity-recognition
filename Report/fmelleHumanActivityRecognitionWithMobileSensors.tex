@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{epstopdf}
 \usepackage[breaklinks=true,bookmarks=false]{hyperref}
 
 \begin{document}
@@ -34,6 +35,8 @@ In the growing field of \textit{Human Activity Recognition} we find ourselves su
 In order to address this massive challenge, this research focuses on analyzing what kind of activities that are recognized most effectively, and what kind of activities require more consideration.
 
 Through a simple standardization of an established and widely used dataset for \textit{Human Activity Recognition}, the study seeks to analyze the per-activity performance using the simplest and perhaps most widely used posterior probability classification method by looking at the various improvements that can be amended to it.
+
+The validation of the results will be established using confusion matrices, precision, sensitivity and error analysis.
 
 %=====================================================================
 
@@ -106,7 +109,7 @@ The original dataset has been assembled sophisticatedly with the aim of satisfyi
 %=====================================================================
 
 \section{Preprocessing Time-Series Data}
-As where the original \textit{Skoda Mini Checkpoint} comes with the measured data in both a calibrated and a raw format, the research focuses on looking at the simplest formulation in only implementing the raw data.
+As where the original \textit{Skoda Mini Checkpoint} comes with the measured data in both a converted calibrated acceleration measure and a raw ADC read-out format, the research focuses on looking at the simplest formulation in only implementing the raw acceleration data.
 
 Although quite sophisticated approaches exist in evaluating the sliding window extraction method, this study focuses on mere simplicity for the purpose of developing a baseline and effectively uses a sliding window of 64 data points resulting each counting for about 2 seconds of measurement with 50\% overflow\cite{Zhang}.
 
@@ -181,62 +184,108 @@ As is usual with this type of deterministic association, $k=1$ nearest neighbor 
 The basis of this study is to first evaluate what the most restrictive classification method can achieve in terms of each activity. The data provided being divided into two separate sets representing respectively the left and right arm the first iteration looks at the performance towards each of these and evaluates the immediate differences.
 
 \subsubsection{Left arm evaluation}
+Applying our algorithm to the left arm dataset yields the per-activity performance for the 10 sensors connected to the left arm only. The baseline precision landed at 92.03\%, with a sensitivity and effectively an error rate at respectively 92.02\% and 7.96\%. 
 
+In order to evaluate the per-activity performance we can look closer at the confusion matrix visualized in Figure~\ref{fig:conf_left_surf} and further broken down in the table structure in Figure~\ref{fig:conf_left}.
 
-\begin{figure*}
-\begin{center}
-  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
-\end{center}
-  \caption{Confusion matrix for left arm performance.}
-  \label{fig:conf_left}
-\end{figure*}
+We can observe a generally strong diagonal indicating the true positive rate, specifically peaking at activities 48 (Write on notepad), 55 (Check trunk gaps)  and 51 (Check gaps on the front door) performing as high as 97.97\% for Writing on notepad. The intuitive reason for this high performance is most naturally that these activities are individually quite different from all the others from a left-arm perspective. 
+
+On the other side of the scale we find activities 49 (Open hood), 52 (Open left front door) and 53 (Close left door). The pair of opening and closing left front door is in particular confused heavily with each other with respectively 6.0\% and 7.1\% confusion, achieving 75.98\% and 81.43\%. Naturally these sequence of gestures are to some extent just the opposite one from the other, with only a handful of sensors measuring just the opposite value. With no weighting to any of the sensors in particular this is a natural consequence as the gesture for most sensors can be observed as just the same.
+
+At 87.7\% the activity of opening the hood is also quite below average being confused with closing the hood at 6.99\%. While this is not the case visa-versa, the confusion might easily be tracked to that opening the hood is usually a right-hand activity. Finally the null activity is generally confused with all other activities intuitively being voted when a performed activity is not discriminant enough from doing nothing.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_left.eps}
+  \caption{Graph visualizing the left arm confusion matrix.}
+  \label{fig:conf_left_surf}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_right.eps}
+  \caption{Graph visualizing the right arm confusion matrix.}
+  \label{fig:conf_right_surf}
+\end{figure}
 
 \subsubsection{Right arm evaluation}
+Performing the same evaluation on the right-arm dataset we achieve a similar, but although differing result. This baseline performance concluded at 90.95\% particularly with a 89.85\% sensitivity and effectively an error rate at 9.05\%.
 
-\begin{figure*}
-\begin{center}
-  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_right.jpg}
-\end{center}
-  \caption{Confusion matrix for right arm performance.}
-  \label{fig:conf_right}
-\end{figure*}
+Looking closer at the confusion matrix visualized in Figure~\ref{fig:conf_right_surf} and broken down in Figure~\ref{fig:conf_right} we can observe that the performance is generally of the same trends as the left-arm data. 
+
+The best performance is for activities 48 (Write on notepad), 51 (Check gaps on front door), 54 (Close both left doors) and 56 (Open and close trunk) with writing on notepad equally peaking on 97.77\%. This be tracked to the fact that these are all heavily right-arm involving activities.
+
+The statistically worst performers include the same activities as was found difficult by the left-arm dataset. The pairs of open vs. close hood (49 and 50) and open vs. close left door (52 and 53) are effectively the worst performers. More specifically opening and closing left door distinct themselves in performing well below the other activities at a striking 73.65\% and 70.61\% respectively, being confused at 15.35\% and 18.42\% with each other and 10.58\% and 10.97\% with the null activity.
 
 \subsubsection{Comparative conclusions}
+The general performance of both left and right arm data classification is depicted in Table~\ref{tab:comp_left_right}. While the precision simply represents our classification correctness, the recall rate is bound to the sensitivity of our classifier. Looking at every activity it represents the number of activities classified as a specific activity over the actual sum data points labeled for that activity. The F1 score is widely used to evaluate classification schemes for a compromise between sensitivity and precision.
 
-** Conf mat for each arm 
+\begin{equation}
+F_1 score = 2 \frac{precision * recall}{precision + recall}
+\end{equation}
 
-In a first time we look closer at the baseline performance of our algorithm once applied most elegantly towards a preprocessed version of the original dataset. This approach serves in providing a ground understanding of how well the simplest evaluation of time-series data performs on a very specific set of a limited number of activities once trained on several repetitions of every activity.
+The positive results tells depicted in the table tells of generally strong performance. Observing the diagonals of both confusion matrices for true positive we find values for most activities well into the 90th percentile, reflected in the $F_1 score$s ending at respectively 92.03\% and 90.40\%.
 
-** First: Evaluate dataset: Data-set split into right and left with different number of measurements.
-- Some activities involves one arm more than the other
-- Same sampling rate
-- One additional sensor on right arm than left arm: 10\% more data.
+The baseline is specifically good at quite distinct activities as writing on the noted, confirming the intuitive conclusion that distinct activities are naturally easier to classify from each other.
 
-** Look at different confusion matrix to evaluate what activities are takes more damage of this - evaluate performance of left and right arm difference by activities performed - which are hurt on each arm and why can that be (opening left door with right arm etc)
+\begin{table}[bp]
+\centering
+\caption{Validation results of optimal nearest neighbors.}
+\begin{tabular}{|l|l|l|}
+\hline
+           							&\textbf{Left arm} 			&\textbf{Right arm}		\\ \hline
+\textbf{Precision}  				& 92.04\% 		 			& 90.95\%					\\ \hline
+\textbf{Error rate} 				& 7.96\%		 				& 9.05\%					\\ \hline
+\textbf{Sensitivity}  				& 92.02\%		 				& 89.85\%					\\ \hline
+\textbf{$F_{1}$ score}  			& 92.03\%		 				& 90.40\%					\\ \hline
 
-** Look at how different activities are recognized by each arm depending on activity -- right arm on left door etc
+\end{tabular}
+\label{tab:comp_left_right}
+\end{table}
 
-** Which activities are the baseline already good at - easy to determine by simple classification and feature extraction tools
+The under-performance of the right-hand data towards the left-arm dataset can statistically be traced to activities open vs. close left door (52 and 53). This issue can further intuitively be traced to the idea that the left door of a vehicle is naturally handled with left hand, letting the right arm slide along the body. This fact explains the internal confusion as well as with the null activity.
 
-** Look at $F_1$ score = $2\frac{precision*recall}{precision + recall}$.
-While the precision simply represents our classification correctness, the recall rate is bound to the sensitivity of our classifier. Looking at every activity it represents the number of activities classified as a specific activity over the actual sum data points labeled for that activity. The F1 score is widely used to evaluate classification schemes for a compromise between sensitivity and precision.
+An apparent issue with the division of the sensors between arms is when evaluating activities that are primarily connected to the other arm. The inclusion of a null activity although has it value in reducing the overall false positive rate. One would for a real-world application rather want an activity not to be registered than having the application always submitting to another category when in doubt. We can therefore conclude with that the confusion towards this activity is of less grave nature and be content with the general performance of about 90\%, specifically in this case when looking at a limited number of sensor focused at one body-part.
+
+The right-arm dataset also looses some performance due to reduced sensitivity. Looking at the null activity classification for this data we can see a higher success, but at a cost of classifying about 10\% of both open and close left door as null activities. The reasons for this having been mentioned this effectively reduces the sensitivity further distancing the datasets from each other.
+
+The effect of the visualizations depicted in Figure~\ref{fig:conf_left_surf} and Figure~\ref{fig:conf_right_surf} is that we can observe the general resemblance in classification success. This effectively predicts that combining the data will not solve any problems as the issues overlap, although it should improve the classification to some extent.
 
 \subsection{Combining The Data}
-The original data provided by \textit{Skoda Mini Checkpoint} does as mentioned contain data separately measured from sensors equally spread and placed on both arms. While it is interesting to evaluate how various activities are recognized with different amounts of success by each arm individually, the study investigates how intelligently merging the two separate datasets improves the recognition. 
+The first step in looking at the combined data of measurements from all 20 accelerometers with three axis of recording each involves merging the provided data.
 
-This will consequently provide understanding of how more doubling the amount of information or sensors for each measurement increases the general classification performance.
+The key issue with this task is that the datasets are effectively of different number of measures with respectively 696,975 and 705,904 data points each. With no indication of reason to this phenomenon in the provided data-description there can be several reasons to this. With an equal sampling rate of period 33 ms each the problem can either be with the right arm having an additional sensor yielding 10\% more data or just the fact that right-arm tasks are generally more usual. 
+
+The assumption made for the merging to take place is that each activity is commenced simultaneously with both arms from a chronological aspect. This enables us to effectively assume that the first data point for each activity for one set should correspond to the first data point of the same activity in the other, discarding eventual supplementary data points for the other arm on a previous activity should they be in imbalance.
+
+The approach leads us to reduce the total number of data points our final merged dataset contains 687,769 rows of data. The validation of this merging is effectively measured by its performance relative to the baseline.
+
+Doubling the amount of sensors for each measure strategically placed on non-overlapping locations of the body should intuitively drastically increase the performance. Although with the final comparative conclusions in the last paragraph we can predict that the improvement should be more subtle, which is confirmed by running the established dataset through the algorithm pipeline.
+
+The combined data performance results in a precision of 94.17\%, with sensitivity and resulting error-rate at respectively 92.94\% and 5.83\%.
+
+ 
+
+%----
+
+** First: Evaluate dataset: Data-set split into right and left with different number of measurements.
+- Same sampling rate
+- One additional sensor on right arm than left arm: 10\% more data.
 
 ** It makes sense that each activity measure will have begun simultaneously on each arm although one of the arms might have recorded more or less data than the other
 
 ** Which activities are immediately easier to determine by combining the data/doubling the sensors - left and right
 
-\begin{figure*}
-\begin{center}
-  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_both.jpg}
-\end{center}
-  \caption{Confusion matrix for right arm performance.}
-  \label{fig:conf_both}
-\end{figure*}
+** Look at improvement to F1 score as well
+
+** Solve arm-specific issues?
+
+\begin{figure}[bp]
+  \centering
+  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_both.eps}
+  \caption{Graph visualizing the combined data confusion matrix.}
+  \label{fig:conf_both_surf}
+\end{figure}
 
 \subsection{Feature Selection and Dimensionality Reduction}
 When attempting to recognize various activities, different sensors have varying impact on different activities. In collaboration with another team working on the same dataset for \textit{Human Activity Recognition}, the research was enhanced by the possibility of measuring the effect of performing a more extensive feature selection with subsequent dimensionality reduction on the same set of data. 
@@ -262,13 +311,21 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scele
 %=====================================================================
 
 \section{Conclusions}
+** Baseline
+In a first time we can recognize that the baseline classification of each dataset with minimum features and preprocessing yields relatively good results. Both producing $F_1 score$s of over 90\% tells us that the activity recognition for this quite reduced data set of 10 specific activities is quite good on an initial basis ..--
 
-** Which activities are generally more confused
+** Which activities are generally more confused:
+Activities that are very similar (open vs. close door) are particularly difficult, need another solution as weighting or perhaps generalization as "Operating left door".
+
+** Solve arm-specific issues: Introduce sensor weighting
+
+** Specificity comes at a cost, a compromise between activity specificity and performance must be addressed when developing the different classes for recognition.
 
 %=====================================================================
 
 \section{Future work}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
+
+** Look at some of the current conclusions and try implement sensor weights etc
 
 %=====================================================================
 
@@ -317,6 +374,30 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scele
 %    "user_id": "WvhiRlcy-XYwiCof"
 %}
 %\end{verbatim}
+
+\begin{figure*}[t]
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
+\end{center}
+  \caption{Confusion matrix for left arm performance.}
+  \label{fig:conf_left}
+\end{figure*}
+
+\begin{figure*}
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_right.jpg}
+\end{center}
+  \caption{Confusion matrix for right arm performance.}
+  \label{fig:conf_right}
+\end{figure*}
+
+\begin{figure*}
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_both.jpg}
+\end{center}
+  \caption{Confusion matrix for combined data performance.}
+  \label{fig:conf_both}
+\end{figure*}
 
 %
 % The following two commands are all you need in the

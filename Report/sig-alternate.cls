@@ -531,7 +531,7 @@
 \def\topfraction{.7}
 \setcounter{bottomnumber}{1}
 \def\bottomfraction{.3}
-\setcounter{totalnumber}{3}
+\setcounter{totalnumber}{4}
 \def\textfraction{.2}
 \def\floatpagefraction{.5}
 \setcounter{dbltopnumber}{2}
