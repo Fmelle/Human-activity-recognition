@@ -254,7 +254,7 @@ The effect of the visualizations depicted in Figure~\ref{fig:conf_left_surf} and
 \subsection{Combining The Data}
 The first step in looking at the combined data of measurements from all 20 accelerometers with three axis of recording each involves merging the provided data.
 
-The key issue with this task is that the datasets are effectively of different number of measures with respectively 696,975 and 705,904 data points each. With no indication of reason to this phenomenon in the provided data-description there can be several reasons to this. With an equal sampling rate of period 33 ms each the problem can either be with the right arm having an additional sensor yielding 10\% more data or just the fact that right-arm tasks are generally more usual. 
+The key issue with this task is that the datasets are effectively of different number of measures with respectively 696,975 and 705,904 data points each. With no indication of reason to this phenomenon in the provided data-description there can be several reasons to this. With an equal sampling rate of period 33 ms each the problem can either be with the right arm having an additional sensor yielding 10\% more data or just the fact that right-arm tasks are generally more usual, which in all cases remains as mere speculations.
 
 The assumption made for the merging to take place is that each activity is commenced simultaneously with both arms from a chronological aspect. This enables us to effectively assume that the first data point for each activity for one set should correspond to the first data point of the same activity in the other, discarding eventual supplementary data points for the other arm on a previous activity should they be in imbalance.
 
@@ -267,12 +267,6 @@ The combined data performance results in a precision of 94.17\%, with sensitivit
  
 
 %----
-
-** First: Evaluate dataset: Data-set split into right and left with different number of measurements.
-- Same sampling rate
-- One additional sensor on right arm than left arm: 10\% more data.
-
-** It makes sense that each activity measure will have begun simultaneously on each arm although one of the arms might have recorded more or less data than the other
 
 ** Which activities are immediately easier to determine by combining the data/doubling the sensors - left and right
 
