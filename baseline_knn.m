@@ -68,7 +68,8 @@ title(['Confusion matrix for Right dataset'])
 
 
 load('left_lda.data')  
-% k: 7 Result: 0.953480077448283 Loss: 0.046927545093232
+% k: 7 Result: 0.953327218995210 Loss: 0.046672781004778
+% F1: 0.948003662533955
 k = 7;
 % Execution
 features = left_lda(:,2:end); % Data should be changed to corresponding above
@@ -84,7 +85,8 @@ surf(nConfkNN_left_lda)
 title(['Confusion matrix for Left LDA dataset'])
 
 load('right_lda.data') 
-% k: 7 Result: 0.944581218911722 Loss: 0.055469024770125
+% k: 7 Result: 0.945284630457720 Loss: 0.054715369542270
+% F1: 0.937973622521292
 k = 7;
 % Execution
 features = right_lda(:,2:end); % Data should be changed to corresponding above
@@ -131,8 +133,8 @@ title(['Score both perc'])
 figure
 plot(f1_perc_both)
 title(['F1 both perc'])
-% 10%: Perf 0.846368715083799 Loss 0.153631284916202
-% 60%: Perf 0.932371645726695 Loss 0.067628354273311
+% 10%: Prec 0.846368715083799 Loss 0.153631284916202
+% 60%: Prec 0.932371645726695 Loss 0.067628354273311
 save('score_perc_both', 'score_perc_both')
 save('f1_perc_both', 'f1_perc_both')
 % Right
@@ -145,8 +147,9 @@ title(['Score right perc'])
 figure
 plot(f1_perc_right)
 title(['F1 right perc'])
-% 10%: Perf 0.806890299184044 Loss 0.193109700815951
-% 60%: Perf 0.896041100030221 Loss 0.103958899969793
+% 10%: Prec 0.821396192203082 Loss 0.178603807796913 F1 0.820312051672798
+% 60%: Prec 0.895587790873376 Loss 0.104412209126638 F1 0.883895632742225
+% 80%: Prec 0.905371713508613 Loss 0.094628286491401 F1 0.893482299884858
 save('score_perc_right', 'score_perc_right')
 save('f1_perc_right', 'f1_perc_right')
 % Left
@@ -159,9 +162,9 @@ title(['Score left perc'])
 figure
 plot(f1_perc_left)
 title(['F1 left perc'])
-% 10%: Perf 0.819100091827365 Loss 0.180899908172631
-% 60%: Perf 0.903428221610040 Loss 0.096571778389948
-% 80%: Perf 0.915289256198347 Loss 0.084710743801644
+% 10%: Prec 0.843893480257117 Loss 0.156106519742880 F1 0.864194428343865
+% 60%: Prec 0.908325681052954 Loss 0.091674318947035 F1 0.908044638135363
+% 80%: Prec 0.914026629935721 Loss 0.085973370064270 F1 0.904676144230382
 save('score_perc_left', 'score_perc_left')
 save('f1_perc_left', 'f1_perc_left')
 

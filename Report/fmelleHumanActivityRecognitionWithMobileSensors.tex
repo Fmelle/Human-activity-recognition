@@ -102,11 +102,17 @@ When attempting to recognize various activities, different sensors have varying 
 Looking at the performance of this approach explores the space of improvement in extracting more features while intelligently keeping the ones that should improve the discrimination between the activities and discarding those that make them look more similar.
 
 \subsection{Performance by Increasing Data Amount}
-In a real-world application an implemented algorithm should not only perform very accurately, it will optimally also handle real-time received data from the sensors. To approach this with the provided dataset, the study will look at classification performance for percentage amounts of the original data ranging from 10\% to a maximum 100\%.
-
-The original dataset has been assembled sophisticatedly with the aim of satisfying the need for creating a working classification model with a minimum amount of measurements. Through this approach the study analyzes the compromise between classification performance and efficiency with the idea that less data induces higher computational speed.
+In a real-world application an implemented algorithm should not only perform very accurately, it will optimally also handle real-time received data from the sensors. To approach this with the provided dataset, the study will perform a brief assessment of the classification precision for percentage amounts of the original data ranging from 10\% to a maximum 100\%.
 
 %=====================================================================
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.6\linewidth]{non_tech_imgs/knn_vis.png}
+\end{center}
+  \caption{A visualization of the nearest neighbors method.}
+  \label{fig:knn_vis}
+\end{figure}
 
 \section{Preprocessing Time-Series Data}
 As where the original \textit{Skoda Mini Checkpoint} comes with the measured data in both a converted calibrated acceleration measure and a raw ADC read-out format, the research focuses on looking at the simplest formulation in only implementing the raw acceleration data.
@@ -121,6 +127,14 @@ A last step in preparing the data was performing a 10 fold partitioning to prepa
 
 %=====================================================================
 
+\begin{figure}[bp]
+\begin{center}
+\includegraphics[width=0.6\linewidth]{visual_results/evaluate_k_both_perf.jpg}
+\end{center}
+\caption{Precision evaluation for number of nearest neighbors.}
+\label{fig:eval_k_both_perf}
+\end{figure}
+
 \section{Algorithm}
 In the terms of developing the most simplistic classification algorithm, the \textit{k nearest neighbors} was found ideal. Amongst the various posterior probability measuring algorithms this algorithm makes no assumption of the data distribution and performing deterministic association on a adjustable local scope as depicted in Figure~\ref{fig:knn_vis}. This approach justifies its purpose of analyzing which activities that are likely to be misclassified. 
 
@@ -128,24 +142,8 @@ The algorithm is implemented by using \textit{MATLAB}'s publicly available libra
 
 The code that went into the implementation of the proposed solution is visible at \url{http://tiny.cc/FMSDL14}.
 
-\begin{figure}[bp]
-\begin{center}
-  \includegraphics[width=0.6\linewidth]{non_tech_imgs/knn_vis.png}
-\end{center}
-  \caption{A visualization of the nearest neighbors method.}
-  \label{fig:knn_vis}
-\end{figure}
-
 \subsection{Configuring the KNN}
 Once partitioned the \textit{KNN} effectively makes use of a 10-fold cross-validation for both determining its parameters and performing the general classification. In a total of ten iterations, it trains on nine of the partitions and tests on one. This allows us to predict on ever data point that is available to minimize the opportunity for over-fitting the parameter $k$ and maximizing the validity of the performance results.
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.6\linewidth]{visual_results/evaluate_k_both_perf.jpg}
-\end{center}
-\caption{Precision evaluation for number of nearest neighbors.}
-\label{fig:eval_k_both_perf}
-\end{figure}
 
 \begin{figure}
 \begin{center}
@@ -161,7 +159,7 @@ The process is illustrated for the combined data set in Figure~\ref{fig:eval_k_b
 
 As is usual with this type of deterministic association, $k=1$ nearest neighbor is quite prone to overfitting and even excellent results for this value should be ignored. With quite few classes kind of graph output was typical for all the processed datasets. In this example the optimal number of nearest neighbors is easily observed, as both graphs has their most apparent extremity for $k=5$ which is consequently the optimal $k$ for this dataset of combined data from left and right arm. The results regarding all the datasets processed by the validation scheme is displayed in Table~\ref{tab:optimal_k}.
 
-\begin{table}[bp]
+\begin{table}[t]
 \centering
 \caption{Validation results of optimal nearest neighbors.}
 \begin{tabular}{|l|l|}
@@ -194,18 +192,11 @@ On the other side of the scale we find activities 49 (Open hood), 52 (Open left 
 
 At 87.7\% the activity of opening the hood is also quite below average being confused with closing the hood at 6.99\%. While this is not the case visa-versa, the confusion might easily be tracked to that opening the hood is usually a right-hand activity. Finally the null activity is generally confused with all other activities intuitively being voted when a performed activity is not discriminant enough from doing nothing.
 
-\begin{figure}[t]
+\begin{figure}[bp]
   \centering
   \includegraphics[scale=0.4]{./matlab_output/nConfkNN_left.eps}
   \caption{Graph visualizing the left arm confusion matrix.}
   \label{fig:conf_left_surf}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_right.eps}
-  \caption{Graph visualizing the right arm confusion matrix.}
-  \label{fig:conf_right_surf}
 \end{figure}
 
 \subsubsection{Right arm evaluation}
@@ -216,6 +207,13 @@ Looking closer at the confusion matrix visualized in Figure~\ref{fig:conf_right_
 The best performance is for activities 48 (Write on notepad), 51 (Check gaps on front door), 54 (Close both left doors) and 56 (Open and close trunk) with writing on notepad equally peaking on 97.77\%. This be tracked to the fact that these are all heavily right-arm involving activities.
 
 The statistically worst performers include the same activities as was found difficult by the left-arm dataset. The pairs of open vs. close hood (49 and 50) and open vs. close left door (52 and 53) are effectively the worst performers. More specifically opening and closing left door distinct themselves in performing well below the other activities at a striking 73.65\% and 70.61\% respectively, being confused at 15.35\% and 18.42\% with each other and 10.58\% and 10.97\% with the null activity.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_right.eps}
+  \caption{Graph visualizing the right arm confusion matrix.}
+  \label{fig:conf_right_surf}
+\end{figure}
 
 \subsubsection{Comparative conclusions}
 The general performance of both left and right arm data classification is depicted in Table~\ref{tab:comp_left_right}. While the precision simply represents our classification correctness, the recall rate is bound to the sensitivity of our classifier. Looking at every activity it represents the number of activities classified as a specific activity over the actual sum data points labeled for that activity. The F1 score is widely used to evaluate classification schemes for a compromise between sensitivity and precision.
@@ -233,8 +231,8 @@ The baseline is specifically good at quite distinct activities as writing on the
 \caption{Validation results of optimal nearest neighbors.}
 \begin{tabular}{|l|l|l|}
 \hline
-           							&\textbf{Left arm} 			&\textbf{Right arm}		\\ \hline
-\textbf{Precision}  				& 92.04\% 		 			& 90.95\%					\\ \hline
+           							&\textbf{Left arm} 				&\textbf{Right arm}		\\ \hline
+\textbf{Precision}  				& 92.04\% 		 				& 90.95\%					\\ \hline
 \textbf{Error rate} 				& 7.96\%		 				& 9.05\%					\\ \hline
 \textbf{Sensitivity}  				& 92.02\%		 				& 89.85\%					\\ \hline
 \textbf{$F_{1}$ score}  			& 92.03\%		 				& 90.40\%					\\ \hline
@@ -278,7 +276,7 @@ The general result is as indicated in Figure~\ref{fig:conf_both_surf} and predic
 
 The nature of the merging can take some of the blame by reducing the number of data points for each activity, but more generally other methods should be considered from a statistical perspective.
 
-\subsection{Feature Selection and Dimensionality Reduction}
+\subsection{Feature Selection}
 As of the start of the research process an idea was proposed and agreed upon in that this study looking at the baseline performance and various improvement options could mutually profit from the collaboration with another team working the same project of \textit{Human Activity Recognition}, focusing on feature selection with dimensionality reduction.
 
 While the other team made efforts towards various feature selection techniques I have focused on enhancing this research by examining the effects of performing Linear Discriminant Analysis on the same dataset.
@@ -289,46 +287,124 @@ Extracting a larger set of features from the time-series data subsequently reduc
 
 The resulting processed data from LDA contains a highly reduced number of features. Whereas each baseline data set contained a total of 60 features, representing two extracted characteristics for each of three axis of all 10 accelerometers, the datasets once processed by LDA contains 12 features each. Ahead of looking at the actual results we can conclude that the computational speed of the pipeline should consequently increase accordingly with this data.
 
-For 
+Classification results successfully confirms the idea that a strategic feature selection method should increase the general performance of the classifier.  
+
+\subsubsection{Left arm improvement}
+For the left-arm data we register a precision of 95.33\%, with a following F1 score of 94.8\% and subsequent error rate of 4.67\%. 
+
+To more easily study the per-activity specific improvement, rather than looking at the new confusion matrix itself a differed result between the baseline and the LDA processed data for left arm is visualized in Figure~\ref{fig:conf_left_imp_surf} with a breakdown in Figure~\ref{fig:conf_left_imp_LDA}.\\[.5em]
+
+\subsubsection{Right arm improvement}
+The right-arm data with similar results of 94.53\% precision and 5.47\% error, resulting in a F1 score of 93.80\%.
+
+In the same fashion as with the left arm data, a visualizing figure using the same approach with a following breakdown are found respectively in Figure~\ref{fig:conf_right_imp_surf} and Figure~\ref{fig:conf_right_imp_LDA}.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_left_imp_LDA_2.eps}
+  \caption{Graph visualizing the per-activity improvement of left-arm data by LDA in terms of the confusion matrix.}
+  \label{fig:conf_left_imp_surf}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_right_imp_LDA_3.eps}
+  \caption{Graph visualizing the per-activity improvement of right-arm data by LDA in terms of the confusion matrix.}
+  \label{fig:conf_right_imp_surf}
+\end{figure}
+
+\subsubsection{Improvement evaluation}
+The diagonal values in the improvement visualization indicate an overall stronger true positive rate. Moreover the rest of the matrix containing the false positive rates of classification confusion are overall negative.  In particular we can observe that the null activity confusion is highly reducing with this data, which has effectively been exchanged into correct classifications.
+
+However, if we focus on the activities which previously were found particularly difficult by the baseline classification the results are less impressive. Although slightly improved, both struggling pairs of open vs. close hood (49 and 50) and open vs. close left door (52 and 53) have received additional confusion.
+
+Generally recording similar effect on both sets we use the left arm as an example. The true positive of open and close hood are here increased by 3.5\% and 1.9\%, while taking of 0.76\% and 0.41\% more confusion respectively. The toughest challenge of discriminating open and close left door have an increased true positive rate of 2.8\% and 0.66\%, for an additional confusion of 2.7\% and 3.9\%.
+
+The feature extraction method thus increases the general performance, but does not improve the problematic activity discrimination and although introducing higher computational speed, the reduced number of features do not solve our initial issue with certain activity pairs.
+
+\subsection{Performance by Increasing Data Amount}
+The original dataset has been assembled sophisticatedly with the aim of satisfying the need for creating a working classification model with a minimum amount of measurements. By looking at the evolution of classification precision the study analyzes the compromise between performance and efficiency with the idea that less data induces higher computational speed.
+
+While the original goal is to analyze which specific activities require more data to be classified, we can observe from the evolution of the confusion matrix that the tendencies already from 20\% are very much the same as depicted by example of the left-arm data in Figure~\ref{fig:evo_conf_left}. 
 
 
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.45]{./matlab_output/score_perc_left_3.eps}
+  \caption{Evolution of classifier precision over percentage of data from 10\% to 100\% for left-arm dataset.}
+  \label{fig:score_evo_left}
+\end{figure}
 
-%-----
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.4]{./matlab_output/score_perc_right_3.eps}
+  \caption{Evolution of classifier precision over percentage of data from 10\% to 100\% for right-arm dataset.}
+  \label{fig:score_evo_right}
+\end{figure}
 
-** Which activities improves with feature selection
+The focus therefore shifted towards evaluating how the precision grows over increasing the data amount which has been visualized for both datasets respectively in Figure~\ref{fig:score_evo_left} and Figure~\ref{fig:score_evo_right}. 
 
-\subsection{Performance Over Different Amounts of Data}
-In a real-world application an implemented algorithm should not only perform very accurately, it will optimally also handle real-time received data from the sensors. To approach this with the provided dataset, the study will look at classification performance for percentage amounts of the original data ranging from 10\% to a maximum 100\%.
+Although more conclusive results would preferably require more data as the original dataset has been delicately established by a certain amount of repetitions of each activity, the results still yield that the precision slowly saturates as we approach the full dataset.
 
-The original dataset has been assembled sophisticatedly with the aim of satisfying the need for creating a working classification model with a minimum amount of measurements. Through this approach the study analyzes the compromise between classification performance and efficiency with the idea that less data induces higher computational speed.
+Looking at the left-arm dataset, the precision already yields 84.39\% at only 10\% data, and reaches a full 91.4\%, only 0.6\% away from the maximum precision, at 80\% data. We can finally observe it flattening completely out as of 90\% data at maximum performance.
 
-** What activities need more data to be determined (10\%, 20\%, ..)
+Similarly the right-arm dataset lands a 82.14\% precision at 10\% data which increases all the way to 89.56\% for 60\% data and finally achieves next to full performance at 80\% with a 90.54\% precision.
+
+The final results depicted in Table~\ref{tab:evo_prec} tells of a performance saturation, that finally indicates that the precision will not be much further increased by performing more measures and will not solve the problem of per-activity performance issues regarding both pair-wise classification and general performance.
+
+\begin{table}[t]
+\centering
+\caption{Precision evolution over amounts of data.}
+\begin{tabular}{|l|l|l|}
+\hline
+           					&\textbf{Left arm baseline} 	&\textbf{Right arm baseline}		\\ \hline
+\textbf{10\%}  				& 84.39\% 		 				& 82.14\%							\\ \hline
+\textbf{60\%} 				& 90.83\%		 				& 89.56\%							\\ \hline
+\textbf{80\%}  				& 91.4\%		 				& 90.54\%							\\ \hline
+\textbf{100\%}  			& 92.04\% 		 				& 90.95\%							\\ \hline
+
+\end{tabular}
+\label{tab:evo_prec}
+\end{table}
 
 %=====================================================================
 
 \section{Results}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
+Through the exploration of different improvement methods for the original baseline we can assemble a summarizing overview expanded in Table~\ref{tab:results}.
 
-** Look at baseline vs. both vs. LDA in table
+The final results justifies feature selection as the most effective improvement of the ones studied.
+
+\begin{table*}[t]
+\centering
+\caption{Comparable overview of explored improvement schemes}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+           							&\textbf{Left arm} 			&\textbf{Left arm LDA}		&\textbf{Right arm}		&\textbf{Right arm LDA}		&\textbf{Combined data}	\\ \hline
+\textbf{Precision}  				& 92.04\% 		 			& 95.33\%					& 90.95\%				& 94.53\%					& 94.17\%				\\ \hline
+\textbf{Error rate} 				& 7.96\%		 			& 4.67\%					& 9.05\%				& 5.47\%					& 5.83\%				\\ \hline
+\textbf{$F_{1}$ score}  			& 92.03\%		 			& 94.8\%					& 90.40\%				& 93.80\%					& 93.55\%				\\ \hline
+
+\end{tabular}
+\label{tab:results}
+\end{table*}
 
 %=====================================================================
 
 \section{Conclusions}
-** Baseline
-In a first time we can recognize that the baseline classification of each dataset with minimum features and preprocessing yields relatively good results. Both producing $F_1 score$s of over 90\% tells us that the activity recognition for this quite reduced data set of 10 specific activities is quite good on an initial basis ..--
+In a first time the study recognizes that the baseline classification of each dataset with minimum features and preprocessing yields relatively strong results. Both datasets producing $F_1 score$s of over 90\% tells us that the activity recognition for this quite reduced data set of 10 specific activities is of quite high standard initially.
 
-** Which activities are generally more confused:
-Activities that are very similar (open vs. close door) are particularly difficult, need another solution as weighting or perhaps generalization as "Operating left door".
+Studying various ways of improving the per-activity and general classification performance we see that feature selection strikes as the most effective, as it reduces the size of the dataset by features and generally achieves a higher performance.
 
-** Solve arm-specific issues: Introduce sensor weighting
+However, activities that are very similar as open and closing a door are particularly difficult to solve, not having been solved sufficiently with any of the proposed improvement schemes. Although one approach could be to combine all the explored solutions, unfortunately as none of them addresses the issue specifically the problem is prone to overlap and remain improved, but not solved in a real-world application. 
 
-** Specificity comes at a cost, a compromise between activity specificity and performance must be addressed when developing the different classes for recognition.
+Several approaches can be taken towards this per-activity issue. Should one although seek to solve the issue properly an option would be to introduce sensor weights. Through this approach one could perhaps handle the issue with only certain sensor registering the difference in impact of quite similar tasks.
+
+Specificity comes at a cost, and a compromise between activity specificity and classification performance must be addressed when developing the set of classes to be recognized. By example, a possible option to solve the issue with opening and closing left car door would be to merge the activities into operating left car door, and such merging the classes with their features, which would effectively solve the problem.
 
 %=====================================================================
 
 \section{Future work}
-
-** Look at some of the current conclusions and try implement sensor weights etc
+An interesting possibility for further addressing the issue with specificity would be to evaluate both methods proposed in the conclusion. Evaluating different sensor weighting options as well as reducing the specificity would effectively be a next step in evaluating how we can approach more successfully specific \textit{Human Activity Recognition} applications.
 
 %=====================================================================
 
@@ -378,7 +454,7 @@ Activities that are very similar (open vs. close door) are particularly difficul
 %}
 %\end{verbatim}
 
-\begin{figure*}[t]
+\begin{figure*}[bp]
 \begin{center}
   \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
 \end{center}
@@ -386,7 +462,7 @@ Activities that are very similar (open vs. close door) are particularly difficul
   \label{fig:conf_left}
 \end{figure*}
 
-\begin{figure*}
+\begin{figure*}[bp]
 \begin{center}
   \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_right.jpg}
 \end{center}
@@ -394,12 +470,36 @@ Activities that are very similar (open vs. close door) are particularly difficul
   \label{fig:conf_right}
 \end{figure*}
 
-\begin{figure*}
+\begin{figure*}[bp]
 \begin{center}
   \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_both.jpg}
 \end{center}
   \caption{Confusion matrix for combined data performance.}
   \label{fig:conf_both}
+\end{figure*}
+
+\begin{figure*}
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left_imp_LDA.jpg}
+\end{center}
+  \caption{Confusion matrix improvement by LDA for left-arm dataset.}
+  \label{fig:conf_left_imp_LDA}
+\end{figure*}
+
+\begin{figure*}
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_right_imp_LDA.jpg}
+\end{center}
+  \caption{Confusion matrix improvement by LDA for right-arm dataset.}
+  \label{fig:conf_right_imp_LDA}
+\end{figure*}
+
+\begin{figure*}
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{matlab_output/evol_left_perc.eps}
+\end{center}
+  \caption{Evolution of the confusion matrix over data amount for the left-arm dataset with images respectively corresponding to data amounts of 10\%, 20\%, \ldots, 90\%, 100\%.}
+  \label{fig:evo_conf_left}
 \end{figure*}
 
 %
