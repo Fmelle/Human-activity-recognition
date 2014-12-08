@@ -12,7 +12,7 @@ load('EstablishedDataForBaseline/_data_procd__basis')
 %    'optimalK_both', 'kNNscore_both', 'rloss_both', 'kloss_both');
 k = 5;
 % Perform training and classification
-[nConfkNN_both, score_both] = kNearestNeighbor(features_all_processed, ...
+[nConfkNN_both, score_both, f1_both] = kNearestNeighbor(features_all_processed, ...
     labels_all_processed, k);
 % Save and print confusion matrix
 disp('Both conf mat')
@@ -30,7 +30,7 @@ title(['Confusion matrix for Combined dataset'])
 %    'optimalK_left', 'kNNscore_left', 'rloss_left', 'kloss_left');
 k = 3;
 % Perform training and classification
-[nConfkNN_left, score_left] = kNearestNeighbor(features_left_processed, ...
+[nConfkNN_left, score_left, f1_left] = kNearestNeighbor(features_left_processed, ...
     labels_left_processed, k);
 % Save and print confusion matrix
 disp('Left conf mat')
@@ -48,7 +48,7 @@ title(['Confusion matrix for Left dataset'])
 %    'optimalK_right', 'kNNscore_right', 'rloss_right', 'kloss_right');
 k = 3;
 % Perform training and classification
-[nConfkNN_right, score_right] = kNearestNeighbor(features_right_processed, ...
+[nConfkNN_right, score_right, f1_right] = kNearestNeighbor(features_right_processed, ...
     labels_right_processed, k);
 % Save and print confusion matrix
 disp('Right conf mat')
@@ -74,7 +74,7 @@ k = 7;
 features = left_lda(:,2:end); % Data should be changed to corresponding above
 labels = skodaNormalizeLabels(left_lda(:,1));
 % kNNValidateK(features, labels);
-[nConfkNN_left_lda, score_left_lda] = kNearestNeighbor(features, labels, k);
+[nConfkNN_left_lda, score_left_lda, f1_left_lda] = kNearestNeighbor(features, labels, k);
 % Save and print confusion matrix
 disp('Left LDA conf mat')
 save('nConfkNN_left_lda','nConfkNN_left_lda');
@@ -90,7 +90,7 @@ k = 7;
 features = right_lda(:,2:end); % Data should be changed to corresponding above
 labels = skodaNormalizeLabels(right_lda(:,1));
 % kNNValidateK(features, labels);
-[nConfkNN_right_lda, score_right_lda] = kNearestNeighbor(features, labels, k);
+[nConfkNN_right_lda, score_right_lda, f1_right_lda] = kNearestNeighbor(features, labels, k);
 % Save and print confusion matrix
 disp('Right LDA conf mat')
 save('nConfkNN_right_lda','nConfkNN_right_lda');
@@ -123,38 +123,53 @@ title(['nConfkNN left imp'])
 
 % Both
 k = 5;
-score_perc_both = PercentAnalysis(features_all_processed, ... 
+[score_perc_both, f1_perc_both] = PercentAnalysis(features_all_processed, ... 
     labels_all_processed, k, 10);
 figure
 plot(score_perc_both)
+title(['Score both perc'])
+figure
+plot(f1_perc_both)
+title(['F1 both perc'])
 % 10%: Perf 0.846368715083799 Loss 0.153631284916202
 % 60%: Perf 0.932371645726695 Loss 0.067628354273311
 save('score_perc_both', 'score_perc_both')
+save('f1_perc_both', 'f1_perc_both')
 % Right
 k = 3;
-score_perc_right = PercentAnalysis(features_right_processed, ... 
+[score_perc_right, f1_perc_right] = PercentAnalysis(features_right_processed, ... 
     labels_right_processed, k, 10);
 figure
 plot(score_perc_right)
+title(['Score right perc'])
+figure
+plot(f1_perc_right)
+title(['F1 right perc'])
 % 10%: Perf 0.806890299184044 Loss 0.193109700815951
 % 60%: Perf 0.896041100030221 Loss 0.103958899969793
 save('score_perc_right', 'score_perc_right')
+save('f1_perc_right', 'f1_perc_right')
 % Left
 k = 3;
-score_perc_left = PercentAnalysis(features_left_processed, ... 
+[score_perc_left, f1_perc_left]= PercentAnalysis(features_left_processed, ... 
     labels_left_processed, k, 10);
 figure
 plot(score_perc_left)
+title(['Score left perc'])
+figure
+plot(f1_perc_left)
+title(['F1 left perc'])
 % 10%: Perf 0.819100091827365 Loss 0.180899908172631
 % 60%: Perf 0.903428221610040 Loss 0.096571778389948
 % 80%: Perf 0.915289256198347 Loss 0.084710743801644
 save('score_perc_left', 'score_perc_left')
+save('f1_perc_left', 'f1_perc_left')
 
 
 end
 
 
-function [nConfkNN, score]=kNearestNeighbor(features, labels, optimalK)
+function [nConfkNN, score, F1]=kNearestNeighbor(features, labels, optimalK)
 %% Create and score the kNN classifier
 % Create the kNN classifier on all data
 knn = ClassificationKNN.fit(features, labels, 'NumNeighbors', optimalK);
@@ -264,9 +279,10 @@ printmat(nConfkNN, 'Confusion matrix', printLabels, printLabels)
 
 end
 
-function score_perc = PercentAnalysis(features, labels, k, partitions)
+function [score_perc, f1_perc] = PercentAnalysis(features, labels, k, partitions)
 % Set parameters
 score_perc = zeros(partitions,1);
+f1_perc = zeros(partitions,1);
 [splot_dim1,splot_dim2] = getSubPlotDims(partitions);
 
 % Do KNN for each percentage
@@ -274,7 +290,7 @@ figure
 for i=1:partitions
     [features_perc, labels_perc] = getPercData(features, ...
         labels, i, partitions);
-    [nConfkNN_perc, score_perc(i,1)] = kNearestNeighbor(features_perc, ...
+    [nConfkNN_perc, score_perc(i,1), f1_perc(i,1)] = kNearestNeighbor(features_perc, ...
         labels_perc, k);
     % Plot confusion matrices to see evolution of per-acitivty error
     subplot(splot_dim1,splot_dim2,i)

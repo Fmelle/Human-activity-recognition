@@ -252,6 +252,14 @@ The right-arm dataset also looses some performance due to reduced sensitivity. L
 The effect of the visualizations depicted in Figure~\ref{fig:conf_left_surf} and Figure~\ref{fig:conf_right_surf} is that we can observe the general resemblance in classification success. This effectively predicts that combining the data will not solve any problems as the issues overlap, although it should improve the classification to some extent.
 
 \subsection{Combining The Data}
+
+\begin{figure}[bp]
+  \centering
+  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_both.eps}
+  \caption{Graph visualizing the combined data confusion matrix.}
+  \label{fig:conf_both_surf}
+\end{figure}
+
 The first step in looking at the combined data of measurements from all 20 accelerometers with three axis of recording each involves merging the provided data.
 
 The key issue with this task is that the datasets are effectively of different number of measures with respectively 696,975 and 705,904 data points each. With no indication of reason to this phenomenon in the provided data-description there can be several reasons to this. With an equal sampling rate of period 33 ms each the problem can either be with the right arm having an additional sensor yielding 10\% more data or just the fact that right-arm tasks are generally more usual, which in all cases remains as mere speculations.
@@ -262,31 +270,30 @@ The approach leads us to reduce the total number of data points our final merged
 
 Doubling the amount of sensors for each measure strategically placed on non-overlapping locations of the body should intuitively drastically increase the performance. Although with the final comparative conclusions in the last paragraph we can predict that the improvement should be more subtle, which is confirmed by running the established dataset through the algorithm pipeline.
 
-The combined data performance results in a precision of 94.17\%, with sensitivity and resulting error-rate at respectively 92.94\% and 5.83\%.
+The combined data performance results in a precision of 94.17\%, with sensitivity and resulting error-rate at respectively 92.94\% and 5.83\%. Effectively the precision is improved by two percentage points in regards to the left arm results, while the sensitivity stays about the same effectively inflicting such that we only have one percentage point increase towards the final $F_1 score$.
 
- 
+Looking at the resulting confusion matrix visualization in Figure~\ref{fig:conf_both_surf} and breakdown in Figure~\ref{fig:conf_both} we can immediately observe less confusion towards the null activity, generally indicating overall improvement subsequently confirmed by looking at both the diagonal true positive values and the general confusion.
 
-%----
+The general result is as indicated in Figure~\ref{fig:conf_both_surf} and predicted previously of the same nature as the previous results, just slightly better. Combining the datasets does not solve the issues related to the per-activity recognition. The best and worst performers are still the same individual and pairs of activities as with the baseline, and one would hope for a better improvement by doubling the number of sensors on such strategic places.
 
-** Which activities are immediately easier to determine by combining the data/doubling the sensors - left and right
-
-** Look at improvement to F1 score as well
-
-** Solve arm-specific issues?
-
-\begin{figure}[bp]
-  \centering
-  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_both.eps}
-  \caption{Graph visualizing the combined data confusion matrix.}
-  \label{fig:conf_both_surf}
-\end{figure}
+The nature of the merging can take some of the blame by reducing the number of data points for each activity, but more generally other methods should be considered from a statistical perspective.
 
 \subsection{Feature Selection and Dimensionality Reduction}
-When attempting to recognize various activities, different sensors have varying impact on different activities. In collaboration with another team working on the same dataset for \textit{Human Activity Recognition}, the research was enhanced by the possibility of measuring the effect of performing a more extensive feature selection with subsequent dimensionality reduction on the same set of data. 
+As of the start of the research process an idea was proposed and agreed upon in that this study looking at the baseline performance and various improvement options could mutually profit from the collaboration with another team working the same project of \textit{Human Activity Recognition}, focusing on feature selection with dimensionality reduction.
 
-Looking at the performance of this approach explores the space of improvement in extracting more features while intelligently keeping the ones that should improve the discrimination between the activities and discarding those that make them look more similar.
+While the other team made efforts towards various feature selection techniques I have focused on enhancing this research by examining the effects of performing Linear Discriminant Analysis on the same dataset.
 
-** Extracting a larger set of features from the time-series data subsequently reduced for optimal classification performance through Linear Discriminant Analysis. LDA efficiently maximizes the mean value of Kullback-Leibler divergence between the activities although assuming Gaussian distribution of the data as well as identical covariance. The technique effectively
+The idea is that when attempting to recognize various activities, different sensors have varying impact on different activities. While some sensor might have strategic value towards all types of activities, some risk introducing more noise and confusion rather than precision.
+
+Extracting a larger set of features from the time-series data subsequently reduced for optimal classification performance through Linear Discriminant Analysis should effectively improve discrimination between activities. LDA efficiently maximizes the mean value of Kullback-Leibler divergence between the activities although assuming Gaussian distribution of the data as well as identical covariance.
+
+The resulting processed data from LDA contains a highly reduced number of features. Whereas each baseline data set contained a total of 60 features, representing two extracted characteristics for each of three axis of all 10 accelerometers, the datasets once processed by LDA contains 12 features each. Ahead of looking at the actual results we can conclude that the computational speed of the pipeline should consequently increase accordingly with this data.
+
+For 
+
+
+
+%-----
 
 ** Which activities improves with feature selection
 
@@ -301,6 +308,8 @@ The original dataset has been assembled sophisticatedly with the aim of satisfyi
 
 \section{Results}
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae scelerisque enim. Donec venenatis diam eget orci luctus, a semper urna maximus. Fusce tincidunt quam ut mauris consequat, sit amet aliquet sem pharetra. Ut posuere at dolor eu rutrum. Suspendisse tempus ultricies finibus. Nullam dapibus ac diam sed pulvinar. Phasellus convallis felis pretium consectetur interdum. Mauris sagittis nibh sed turpis facilisis dictum. Nam vel risus in mauris fringilla pharetra sed sed turpis. Nunc convallis dolor quam, ut convallis felis viverra quis.
+
+** Look at baseline vs. both vs. LDA in table
 
 %=====================================================================
 
