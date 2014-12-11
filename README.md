@@ -7,7 +7,9 @@ In combination with another team aiming at performing Feature Selection through 
 
 Further studies include the iterative process of including 10%, 20%, 30% .. data to study the neccesity of data amount to establish a useful classification model looking at which activities require more data and less to be determined with a high success.
 
-A first stable version has been established under v1.0.
+Results and process is summarized in a report and a presentation.
+
+The last stable version has been established under v1.1.
 
 Current Data: 
 -------------
