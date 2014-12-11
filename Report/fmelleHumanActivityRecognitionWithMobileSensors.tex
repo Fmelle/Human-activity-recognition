@@ -195,7 +195,7 @@ At 87.7\% the activity of opening the hood is also quite below average being con
 \begin{figure}[bp]
   \centering
   \includegraphics[scale=0.4]{./matlab_output/nConfkNN_left.eps}
-  \caption{Graph visualizing the left arm confusion matrix.}
+  \caption{Visualization of the left arm confusion matrix.}
   \label{fig:conf_left_surf}
 \end{figure}
 
@@ -211,7 +211,7 @@ The statistically worst performers include the same activities as was found diff
 \begin{figure}
   \centering
   \includegraphics[scale=0.4]{./matlab_output/nConfkNN_right.eps}
-  \caption{Graph visualizing the right arm confusion matrix.}
+  \caption{Visualization of the right arm confusion matrix.}
   \label{fig:conf_right_surf}
 \end{figure}
 
@@ -250,15 +250,7 @@ The right-arm dataset also looses some performance due to reduced sensitivity. L
 The effect of the visualizations depicted in Figure~\ref{fig:conf_left_surf} and Figure~\ref{fig:conf_right_surf} is that we can observe the general resemblance in classification success. This effectively predicts that combining the data will not solve any problems as the issues overlap, although it should improve the classification to some extent.
 
 \subsection{Combining The Data}
-
-\begin{figure}[bp]
-  \centering
-  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_both.eps}
-  \caption{Graph visualizing the combined data confusion matrix.}
-  \label{fig:conf_both_surf}
-\end{figure}
-
-The first step in looking at the combined data of measurements from all 20 accelerometers with three axis of recording each involves merging the provided data.
+The first step in looking at the combined data of measurements from all 20 accelerometers involves merging the provided data.
 
 The key issue with this task is that the datasets are effectively of different number of measures with respectively 696,975 and 705,904 data points each. With no indication of reason to this phenomenon in the provided data-description there can be several reasons to this. With an equal sampling rate of period 33 ms each the problem can either be with the right arm having an additional sensor yielding 10\% more data or just the fact that right-arm tasks are generally more usual, which in all cases remains as mere speculations.
 
@@ -270,9 +262,9 @@ Doubling the amount of sensors for each measure strategically placed on non-over
 
 The combined data performance results in a precision of 94.17\%, with sensitivity and resulting error-rate at respectively 92.94\% and 5.83\%. Effectively the precision is improved by two percentage points in regards to the left arm results, while the sensitivity stays about the same effectively inflicting such that we only have one percentage point increase towards the final $F_1 score$.
 
-Looking at the resulting confusion matrix visualization in Figure~\ref{fig:conf_both_surf} and breakdown in Figure~\ref{fig:conf_both} we can immediately observe less confusion towards the null activity, generally indicating overall improvement subsequently confirmed by looking at both the diagonal true positive values and the general confusion.
+Looking at the resulting confusion matrix breakdown in Figure~\ref{fig:conf_both} we can immediately observe less confusion towards the null activity, generally indicating overall improvement subsequently confirmed by looking at both the diagonal true positive values and the general confusion.
 
-The general result is as indicated in Figure~\ref{fig:conf_both_surf} and predicted previously of the same nature as the previous results, just slightly better. Combining the datasets does not solve the issues related to the per-activity recognition. The best and worst performers are still the same individual and pairs of activities as with the baseline, and one would hope for a better improvement by doubling the number of sensors on such strategic places.
+The general result is as predicted previously of the same nature as the previous results, just slightly better. Combining the datasets does not solve the issues related to the per-activity recognition. The best and worst performers are still the same individual and pairs of activities as with the baseline, and one would hope for a better improvement by doubling the number of sensors on such strategic places.
 
 The nature of the merging can take some of the blame by reducing the number of data points for each activity, but more generally other methods should be considered from a statistical perspective.
 
@@ -292,24 +284,38 @@ Classification results successfully confirms the idea that a strategic feature s
 \subsubsection{Left arm improvement}
 For the left-arm data we register a precision of 95.33\%, with a following F1 score of 94.8\% and subsequent error rate of 4.67\%. 
 
-To more easily study the per-activity specific improvement, rather than looking at the new confusion matrix itself a differed result between the baseline and the LDA processed data for left arm is visualized in Figure~\ref{fig:conf_left_imp_surf} with a breakdown in Figure~\ref{fig:conf_left_imp_LDA}.\\[.5em]
+In order to more easily study the per-activity specific improvement for the left and right arm dataset with feature selection, a different performance measure was chosen. Rather than looking at the new raw confusion matrix as earlier, a differed result between the baseline and the LDA processed data for left arm is visualized in Figure~\ref{fig:conf_left_imp_surf} with a breakdown in Figure~\ref{fig:conf_left_imp_LDA}, following this formula in order to normalize the effect.\\[1em]
+\begin{equation}\label{eq:left_LDA_Conf_Imp}
+\begin{array}{lcl}
+&& nConfImprovementLeft_{kNN} = \\
+&& nConfLeftLDA_{kNN} \\
+&&- nConfLeftBaseline_{kNN} \\
+\end{array}
+\end{equation}
 
 \subsubsection{Right arm improvement}
 The right-arm data with similar results of 94.53\% precision and 5.47\% error, resulting in a F1 score of 93.80\%.
 
-In the same fashion as with the left arm data, a visualizing figure using the same approach with a following breakdown are found respectively in Figure~\ref{fig:conf_right_imp_surf} and Figure~\ref{fig:conf_right_imp_LDA}.
+In the same fashion as with the left arm data, a visualizing figure using the same approach with a following breakdown are found respectively in Figure~\ref{fig:conf_right_imp_surf} and Figure~\ref{fig:conf_right_imp_LDA}, following the same formula as depicted below.\\[1em]
+\begin{equation}\label{eq:right_LDA_Conf_Imp}
+\begin{array}{lcl}
+&& nConfImprovementRight_{kNN} = \\
+&& nConfRightLDA_{kNN}\\
+&&- nConfRightBaseline_{kNN}\\
+\end{array}
+\end{equation}
 
 \begin{figure}
   \centering
   \includegraphics[scale=0.4]{./matlab_output/nConfkNN_left_imp_LDA_2.eps}
-  \caption{Graph visualizing the per-activity improvement of left-arm data by LDA in terms of the confusion matrix.}
+  \caption{Visualization of the left-arm per-activity improvement by LDA as referenced in Equation~\ref{eq:left_LDA_Conf_Imp}.}
   \label{fig:conf_left_imp_surf}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[scale=0.4]{./matlab_output/nConfkNN_right_imp_LDA_3.eps}
-  \caption{Graph visualizing the per-activity improvement of right-arm data by LDA in terms of the confusion matrix.}
+  \includegraphics[scale=0.35]{./matlab_output/nConfkNN_right_imp_LDA_3.eps}
+  \caption{Visualization of the right-arm per-activity improvement by LDA as referenced in Equation~\ref{eq:right_LDA_Conf_Imp}.}
   \label{fig:conf_right_imp_surf}
 \end{figure}
 
@@ -325,24 +331,21 @@ The feature extraction method thus increases the general performance, but does n
 \subsection{Performance by Increasing Data Amount}
 The original dataset has been assembled sophisticatedly with the aim of satisfying the need for creating a working classification model with a minimum amount of measurements. By looking at the evolution of classification precision the study analyzes the compromise between performance and efficiency with the idea that less data induces higher computational speed.
 
-While the original goal is to analyze which specific activities require more data to be classified, we can observe from the evolution of the confusion matrix that the tendencies already from 20\% are very much the same as depicted by example of the left-arm data in Figure~\ref{fig:evo_conf_left}. 
-
-
-\begin{figure}
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.45]{./matlab_output/score_perc_left_3.eps}
+  \includegraphics[scale=0.40]{./matlab_output/score_perc_left_3.eps}
   \caption{Evolution of classifier precision over percentage of data from 10\% to 100\% for left-arm dataset.}
   \label{fig:score_evo_left}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.4]{./matlab_output/score_perc_right_3.eps}
+  \includegraphics[scale=0.35]{./matlab_output/score_perc_right_3.eps}
   \caption{Evolution of classifier precision over percentage of data from 10\% to 100\% for right-arm dataset.}
   \label{fig:score_evo_right}
 \end{figure}
 
-The focus therefore shifted towards evaluating how the precision grows over increasing the data amount which has been visualized for both datasets respectively in Figure~\ref{fig:score_evo_left} and Figure~\ref{fig:score_evo_right}. 
+While the original goal is to analyze which specific activities require more data to be classified, the evolution of the precision is although linear with the growing amount of data. The focus therefore shifted towards evaluating how the precision specifically grows over increasing the data amount which has been visualized for both datasets respectively in Figure~\ref{fig:score_evo_left} and Figure~\ref{fig:score_evo_right}. 
 
 Although more conclusive results would preferably require more data as the original dataset has been delicately established by a certain amount of repetitions of each activity, the results still yield that the precision slowly saturates as we approach the full dataset.
 
@@ -374,7 +377,7 @@ Through the exploration of different improvement methods for the original baseli
 
 The final results justifies feature selection as the most effective improvement of the ones studied.
 
-\begin{table*}[t]
+\begin{table*}[bp]
 \centering
 \caption{Comparable overview of explored improvement schemes}
 \begin{tabular}{|l|l|l|l|l|l|}
@@ -382,8 +385,7 @@ The final results justifies feature selection as the most effective improvement 
            							&\textbf{Left arm} 			&\textbf{Left arm LDA}		&\textbf{Right arm}		&\textbf{Right arm LDA}		&\textbf{Combined data}	\\ \hline
 \textbf{Precision}  				& 92.04\% 		 			& 95.33\%					& 90.95\%				& 94.53\%					& 94.17\%				\\ \hline
 \textbf{Error rate} 				& 7.96\%		 			& 4.67\%					& 9.05\%				& 5.47\%					& 5.83\%				\\ \hline
-\textbf{$F_{1}$ score}  			& 92.03\%		 			& 94.8\%					& 90.40\%				& 93.80\%					& 93.55\%				\\ \hline
-
+\textbf{$F_{1}$ score}  			& 92.03\%		 			& 94.8\%					& 90.40\%				& 93.80\%					& 93.55\%			\\ \hline
 \end{tabular}
 \label{tab:results}
 \end{table*}
@@ -453,36 +455,35 @@ An interesting possibility for further addressing the issue with specificity wou
 %    "user_id": "WvhiRlcy-XYwiCof"
 %}
 %\end{verbatim}
-
 \begin{figure*}[bp]
-\begin{center}
-  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
-\end{center}
-  \caption{Confusion matrix for left arm performance.}
-  \label{fig:conf_left}
+\centering
+\includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left.jpg}
+\caption{Confusion matrix for left arm performance.}
+\label{fig:conf_left}
 \end{figure*}
 
 \begin{figure*}[bp]
-\begin{center}
-  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_right.jpg}
-\end{center}
-  \caption{Confusion matrix for right arm performance.}
-  \label{fig:conf_right}
+\includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_right.jpg}
+\centering
+\caption{Confusion matrix for right arm performance.}
+\label{fig:conf_right}
 \end{figure*}
 
 \begin{figure*}[bp]
-\begin{center}
-  \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_both.jpg}
-\end{center}
-  \caption{Confusion matrix for combined data performance.}
-  \label{fig:conf_both}
+\includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_both.jpg}
+\centering
+\caption{Confusion matrix for combined data performance.}
+\label{fig:conf_both}
+\vspace{150pt}
 \end{figure*}
+	
+%=====================================================================
 
 \begin{figure*}
 \begin{center}
   \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_left_imp_LDA.jpg}
 \end{center}
-  \caption{Confusion matrix improvement by LDA for left-arm dataset.}
+  \caption{Breakdown of the left-arm per-activity improvement by LDA as referenced in Equation~\ref{eq:left_LDA_Conf_Imp}.}
   \label{fig:conf_left_imp_LDA}
 \end{figure*}
 
@@ -490,17 +491,11 @@ An interesting possibility for further addressing the issue with specificity wou
 \begin{center}
   \includegraphics[width=1.0\linewidth]{visual_results/nConfkNN_right_imp_LDA.jpg}
 \end{center}
-  \caption{Confusion matrix improvement by LDA for right-arm dataset.}
+  \caption{Breakdown of the right-arm per-activity improvement by LDA as referenced in Equation~\ref{eq:right_LDA_Conf_Imp}.}
   \label{fig:conf_right_imp_LDA}
 \end{figure*}
 
-\begin{figure*}
-\begin{center}
-  \includegraphics[width=1.0\linewidth]{matlab_output/evol_left_perc.eps}
-\end{center}
-  \caption{Evolution of the confusion matrix over data amount for the left-arm dataset with images respectively corresponding to data amounts of 10\%, 20\%, \ldots, 90\%, 100\%.}
-  \label{fig:evo_conf_left}
-\end{figure*}
+%=====================================================================
 
 %
 % The following two commands are all you need in the
